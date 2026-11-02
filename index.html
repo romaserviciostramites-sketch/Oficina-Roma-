@@ -1,0 +1,959 @@
+<!doctype html>
+<!--
+  ROMA FORMACIÓN · OFICINA
+  ========================
+  Página privada para trabajar cada día preparando los cursos de la academia.
+  Página independiente: no enlaza con ninguna otra web.
+  Todo se guarda solo en tu navegador.
+-->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Oficina · Roma Formación</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fondo:#f7f4ef; --papel:#FFFFFF; --tinta:#0f0f0f; --suave:#666666; --linea:#ede8e0;
+  --azul:#a8854a; --azul-suave:#f5ecd9; --oro:#c8a96e; --verde:#2d6a4f; --aviso:#c0392b;
+  --noir:#0f0f0f; --crema:#f7f4ef;
+  --titulo:"Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --texto:"DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--texto);font-size:17px;line-height:1.55}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--oro);outline-offset:2px}
+h1,h2,h3,h4{font-family:var(--titulo);font-weight:400;line-height:1.1;margin:0}
+.envoltura{max-width:1080px;margin:0 auto;padding:0 20px}
+.oculto{display:none !important}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--fondo)}
+.barra{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--fondo);border-bottom:1px solid var(--linea)}
+.barra .envoltura{display:flex;align-items:center;gap:14px;min-height:60px;flex-wrap:wrap}
+.marca{font-family:var(--titulo);font-size:1.4rem;display:flex;align-items:center;gap:10px;margin-right:auto}
+.marca .rf{width:34px;height:34px;border-radius:8px;background:var(--azul);color:var(--papel);display:flex;align-items:center;justify-content:center;font-family:var(--texto);font-weight:700;font-size:.9rem}
+.marca small{font-family:var(--texto);font-size:.85rem;color:var(--suave);margin-left:2px}
+.enlace-web{color:var(--suave);font-size:.92rem}
+.boton{padding:11px 18px;border-radius:8px;border:0;background:var(--tinta);color:var(--papel);cursor:pointer;font-weight:700;white-space:nowrap;text-decoration:none;display:inline-block}
+.boton.secundario{background:transparent;color:var(--tinta);border:1.5px solid var(--tinta)}
+.boton.verde{background:var(--verde);color:var(--papel)}
+
+.cabecera{display:grid;grid-template-columns:1fr 1fr;gap:28px;padding:30px 0 8px;align-items:start}
+@media (max-width:820px){.cabecera{grid-template-columns:1fr}}
+.reloj{font-family:var(--titulo);font-size:clamp(3.6rem,12vw,6.2rem);line-height:1;font-variant-numeric:tabular-nums}
+.saludo{color:var(--suave);margin:8px 0 18px}
+.estado{display:inline-flex;align-items:center;gap:8px;font-weight:700}
+.punto{width:11px;height:11px;border-radius:50%;background:var(--linea)}
+.trabajando .punto{background:var(--verde);box-shadow:0 0 0 4px rgba(46,139,87,.2)}
+@media (prefers-reduced-motion:no-preference){.trabajando .punto{animation:late 2.4s ease-in-out infinite}}
+@keyframes late{50%{opacity:.4}}
+.fichar{display:block;width:100%;max-width:440px;margin:18px 0 10px;padding:20px 24px;border:0;border-radius:12px;background:var(--azul);color:var(--papel);font-size:1.35rem;font-weight:700;cursor:pointer;text-align:left}
+.fichar small{display:block;font-weight:400;font-size:.95rem;opacity:.85}
+.fichar.salida{background:var(--tinta)}
+.nota{color:var(--suave);font-size:.95rem;margin:4px 0}
+.alerta{background:var(--papel);border-left:4px solid var(--aviso);padding:10px 14px;margin:12px 0;border-radius:6px}
+.franja{margin-top:20px;max-width:520px}
+.franja-barra{position:relative;height:18px;border-radius:4px;background:repeating-linear-gradient(90deg,var(--linea) 0 2px,transparent 2px 25%),var(--papel);border:1px solid var(--linea);overflow:hidden}
+.franja-barra .tramo{position:absolute;top:0;bottom:0;background:var(--azul)}
+.franja-barra .ahora{position:absolute;top:-4px;bottom:-4px;width:3px;background:var(--oro)}
+.franja-horas{display:flex;justify-content:space-between;font-size:.82rem;color:var(--suave);margin-top:4px;font-variant-numeric:tabular-nums}
+
+/* tarea del día: el elemento principal */
+.tarea-dia{background:var(--papel);border:1px solid var(--linea);border-top:5px solid var(--oro);border-radius:12px;padding:22px 22px 20px}
+.tarea-dia .que{font-size:.9rem;color:var(--suave)}
+.tarea-dia .curso{font-weight:700;color:var(--azul);margin-top:10px}
+.tarea-dia h2{font-size:clamp(1.6rem,4.5vw,2.1rem);margin:4px 0 10px}
+.tarea-dia p{margin:0 0 14px;color:var(--suave)}
+.progreso{height:10px;background:var(--fondo);border-radius:5px;overflow:hidden;margin:16px 0 6px}
+.progreso i{display:block;height:100%;background:var(--oro)}
+.tarea-dia .acciones{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.tarea-dia ol{margin:0 0 12px;padding-left:1.3em}
+.tarea-dia ol li{margin-bottom:6px}
+.resultado{background:var(--azul-suave);border-radius:8px;padding:10px 12px;font-size:.95rem;margin:4px 0 14px}
+.resultado b{color:var(--azul)}
+.dia-curso{font-size:.88rem;color:var(--suave);margin-left:6px;font-weight:400}
+.grupo-tipo{font-family:var(--titulo);font-size:1.3rem;margin:18px 0 8px}
+.curso-o.bloqueado .nom,.curso-o.bloqueado .num,.curso-o.bloqueado .etiqueta{opacity:.6}
+.curso-o.activo{border:2px solid var(--azul);background:var(--azul-suave)}
+.curso-o .cambiar{margin-left:auto;padding:9px 14px;font-size:.92rem}
+.curso-o .cambiar.confirmar{background:var(--verde);border-color:var(--verde);color:#fff}
+.aviso-activo{flex-basis:100%;font-size:.92rem;color:var(--tinta);margin-top:4px}
+@media (max-width:520px){.curso-o .cambiar{width:100%;margin-left:0}}
+.curso-o.aparcado .nom b{text-decoration:none}
+.siguiente{font-size:.9rem;color:var(--suave);margin-top:14px;border-top:1px solid var(--linea);padding-top:12px}
+.terminado{font-family:var(--titulo);font-size:1.8rem}
+
+.semana{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:22px}
+.dia{background:var(--papel);border:1px solid var(--linea);border-radius:8px;padding:8px;text-align:center}
+.dia.hoy{border-color:var(--oro);box-shadow:0 0 0 1px var(--oro)}
+.dia b{display:block;font-size:.85rem}
+.dia .barrita{height:46px;background:var(--fondo);border-radius:4px;margin:6px auto;width:18px;position:relative;overflow:hidden}
+.dia .barrita i{position:absolute;left:0;right:0;bottom:0;background:var(--azul)}
+.dia span{font-size:.75rem;color:var(--suave);font-variant-numeric:tabular-nums}
+.cifras{display:flex;gap:22px;flex-wrap:wrap;margin-top:14px;font-size:.88rem;color:var(--suave)}
+.cifras strong{display:block;font-family:var(--titulo);font-size:1.6rem;color:var(--tinta);font-weight:400}
+
+.pestanas{display:flex;gap:4px;margin:34px 0 0;border-bottom:1px solid var(--linea);overflow-x:auto}
+.pestanas button{background:none;border:0;padding:12px 16px;cursor:pointer;color:var(--suave);border-bottom:3px solid transparent;white-space:nowrap;font-size:1rem}
+.pestanas button[aria-selected="true"]{color:var(--tinta);border-color:var(--azul);font-weight:700}
+.panel{padding:24px 0 60px}
+.panel[hidden]{display:none}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+@media (max-width:820px){.dos{grid-template-columns:1fr}}
+.panel h3{font-size:1.6rem;margin-bottom:10px}
+textarea,input[type=text],select{width:100%;padding:10px 12px;border:1px solid var(--linea);border-radius:8px;background:var(--papel)}
+textarea{min-height:140px;resize:vertical}
+.vacio{color:var(--suave);font-style:italic}
+.bloque-plan{background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:14px 18px;margin-bottom:12px}
+.bloque-plan.actual{border:2px solid var(--azul)}
+.bloque-plan header{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
+.bloque-plan h4{font-size:1.3rem}
+.bloque-plan .prog{font-size:.85rem;color:var(--suave)}
+.bloque-plan details summary{cursor:pointer;color:var(--suave);font-size:.92rem;margin-top:4px}
+.lista{list-style:none;margin:8px 0 0;padding:0}
+.lista li{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--linea)}
+.lista li label{flex:1;cursor:pointer}
+.lista li .n{font-size:.8rem;color:var(--suave);min-width:3.6em;padding-top:3px}
+.lista input[type=checkbox]{width:20px;height:20px;margin-top:3px;accent-color:var(--verde);flex-shrink:0}
+.lista .hecha label{color:var(--suave);text-decoration:line-through}
+.lista .actual label{font-weight:700}
+.curso-o{display:flex;gap:10px;align-items:center;background:var(--papel);border:1px solid var(--linea);border-radius:8px;padding:10px 12px;margin-bottom:8px;flex-wrap:wrap}
+.curso-o .num{font-family:var(--titulo);font-size:1.3rem;color:var(--azul);min-width:1.4em}
+.curso-o .nom{flex:1;min-width:160px}
+.curso-o .nom b{display:block}
+.curso-o .nom span{font-size:.85rem;color:var(--suave)}
+.etiqueta{font-size:.78rem;border-radius:999px;padding:2px 10px;background:var(--azul-suave);color:var(--azul);font-weight:700}
+.etiqueta.listo{background:rgba(46,139,87,.15);color:var(--verde)}
+.quitar{background:none;border:0;color:var(--suave);cursor:pointer;font-size:1rem;padding:2px 6px}
+.quitar:disabled{opacity:.3;cursor:default}
+.fila-form{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:8px}
+.fila-form .dos-cols{display:grid;grid-template-columns:2fr .8fr 1.1fr;gap:8px}
+@media (max-width:520px){.fila-form{grid-template-columns:1fr}.fila-form .dos-cols{grid-template-columns:1fr}}
+.diario-dia{background:var(--papel);border:1px solid var(--linea);border-radius:8px;padding:12px 14px;margin-bottom:10px}
+.diario-dia b{display:block;font-size:.9rem;color:var(--azul)}
+.diario-dia p{margin:4px 0 0;white-space:pre-wrap}
+.diario-dia .hechas{font-size:.85rem;color:var(--suave);margin-top:4px}
+.tabla-env{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--linea);white-space:nowrap}
+th{font-size:.88rem;color:var(--suave);font-weight:700}
+.caja{background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:16px 18px;margin-top:20px}
+.caja h4{font-size:1.3rem;margin-bottom:6px}
+.caja p{margin:0 0 10px;color:var(--suave);font-size:.95rem}
+.herramientas{display:flex;gap:10px;flex-wrap:wrap}
+.guardado{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--tinta);color:var(--fondo);padding:8px 14px;border-radius:8px;font-size:.9rem;opacity:0;transition:opacity .3s;pointer-events:none;z-index:20}
+.guardado.ver{opacity:1}
+
+/* ===== Estilo Roma Formación ===== */
+body{font-weight:400}
+h1,h2,h3,h4{font-weight:600;letter-spacing:-.005em}
+.barra{background:rgba(247,244,239,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+body::before{background:var(--crema)}
+.marca{font-family:var(--titulo);font-weight:600;font-size:1.45rem}
+.marca .rf{width:42px;height:42px;border-radius:6px;background:var(--noir);color:var(--oro);font-family:var(--titulo);font-size:1.25rem;font-weight:600}
+.marca small{font-family:var(--texto);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--suave)}
+.boton{background:var(--noir);color:var(--crema);border-radius:6px;transition:background .2s}
+.boton:hover{background:var(--azul)}
+.boton.secundario{background:transparent;color:var(--noir);border:1.5px solid var(--noir)}
+.boton.secundario:hover{background:var(--noir);color:var(--crema)}
+.boton.verde{background:var(--verde);color:#fff}
+.boton.verde:hover{background:#245a42}
+
+.hero-of{position:relative;overflow:hidden;color:var(--crema);
+  background:radial-gradient(ellipse 80% 70% at 70% 35%,#1a2e1f 0%,var(--noir) 70%);padding:34px 0 46px}
+.hero-of .hero-deco{position:absolute;right:-120px;top:50%;transform:translateY(-50%);width:560px;height:560px;border:1px solid rgba(200,169,110,.12);border-radius:50%;pointer-events:none}
+.hero-of .hero-deco2{position:absolute;right:-200px;top:50%;transform:translateY(-50%);width:760px;height:760px;border:1px solid rgba(200,169,110,.06);border-radius:50%;pointer-events:none}
+.hero-of .envoltura{position:relative;z-index:1}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(200,169,110,.12);border:1px solid rgba(200,169,110,.3);color:var(--oro);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;padding:6px 16px;border-radius:20px}
+.hero-tag::before{content:"";width:6px;height:6px;background:var(--oro);border-radius:50%}
+@media (prefers-reduced-motion:no-preference){.hero-tag::before{animation:late 2s infinite}}
+.hero-of .cabecera{padding-top:18px}
+.hero-of .reloj{font-family:var(--titulo);font-weight:300;color:#fff;font-size:clamp(4rem,13vw,7rem)}
+.hero-of .saludo{color:rgba(247,244,239,.62)}
+.hero-of .estado{color:var(--crema)}
+.hero-of .punto{background:rgba(247,244,239,.25)}
+.hero-of .trabajando .punto{background:var(--oro);box-shadow:0 0 0 4px rgba(200,169,110,.22)}
+.hero-of .fichar{background:var(--oro);color:var(--noir);border-radius:8px;transition:background .2s}
+.hero-of .fichar:hover{background:#d8bb83}
+.hero-of .fichar.salida{background:transparent;color:var(--crema);border:1.5px solid var(--oro)}
+.hero-of .fichar.salida:hover{background:rgba(200,169,110,.12)}
+.hero-of .nota{color:rgba(247,244,239,.55)}
+.hero-of .alerta{color:var(--tinta)}
+.hero-of .franja-barra{background:repeating-linear-gradient(90deg,rgba(200,169,110,.25) 0 1px,transparent 1px 25%),rgba(255,255,255,.05);border-color:rgba(200,169,110,.25)}
+.hero-of .franja-barra .tramo{background:var(--oro)}
+.hero-of .franja-barra .ahora{background:#fff}
+.hero-of .franja-horas{color:rgba(247,244,239,.5)}
+.hero-of .dia{background:rgba(255,255,255,.04);border-color:rgba(200,169,110,.2);color:var(--crema)}
+.hero-of .dia.hoy{border-color:var(--oro);box-shadow:0 0 0 1px var(--oro)}
+.hero-of .dia .barrita{background:rgba(255,255,255,.08)}
+.hero-of .dia .barrita i{background:var(--oro)}
+.hero-of .dia span{color:rgba(247,244,239,.55)}
+.hero-of .cifras{color:rgba(247,244,239,.55)}
+.hero-of .cifras strong{color:#fff;font-weight:300;font-size:2rem}
+
+.tarea-dia{border:none;border-top:4px solid var(--oro);border-radius:10px;box-shadow:0 12px 48px rgba(0,0,0,.28);color:var(--tinta)}
+.tarea-dia .que{text-transform:uppercase;letter-spacing:.14em;font-size:.72rem;color:var(--suave)}
+.tarea-dia .curso{color:var(--azul)}
+.tarea-dia h2{font-size:clamp(1.9rem,5vw,2.4rem)}
+.tarea-dia .resultado{background:var(--azul-suave)}
+.tarea-dia .progreso i{background:var(--oro)}
+.terminado{font-family:var(--titulo)}
+.hero-of .tarea-dia .nota{color:var(--suave)}
+.hero-of .tarea-dia .siguiente{color:var(--suave)}
+
+.pestanas{border-bottom-color:var(--linea)}
+.pestanas button[aria-selected="true"]{border-color:var(--oro);color:var(--noir)}
+.panel h3{font-size:1.9rem}
+.bloque-plan,.curso-o,.diario-dia,.caja{border-color:var(--linea);box-shadow:0 4px 24px rgba(0,0,0,.05)}
+.bloque-plan.actual{border:2px solid var(--oro)}
+.curso-o .num{color:var(--azul)}
+.curso-o.activo{border:2px solid var(--oro);background:var(--azul-suave)}
+.etiqueta{background:var(--azul-suave);color:var(--azul)}
+.etiqueta.listo{background:#d8f3dc;color:var(--verde)}
+.curso-o .cambiar.confirmar{background:var(--verde);border-color:var(--verde);color:#fff}
+.diario-dia b{color:var(--azul)}
+.lista input[type=checkbox]{accent-color:var(--verde)}
+:focus-visible{outline-color:var(--oro)}
+
+/* ===== Mi curso ===== */
+.mc-cabecera{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.mc-etq{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--azul)}
+.mc-guardado{font-size:.85rem;color:var(--verde)}
+.mc-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.mc-nav button{border:1px solid var(--linea);background:var(--papel);border-radius:999px;padding:8px 16px;cursor:pointer;font-size:.92rem;color:var(--suave)}
+.mc-nav button[aria-pressed="true"]{background:var(--noir);color:var(--oro);border-color:var(--noir)}
+#mcCaja{max-width:820px}
+#mcCaja select{margin-bottom:14px}
+.mc-campo{margin-bottom:14px}
+.mc-campo label{display:block;font-weight:600;margin-bottom:4px}
+.mc-campo textarea,.mc-campo input{width:100%;padding:12px 14px;border:1px solid var(--linea);border-radius:8px;background:var(--papel);font:inherit;line-height:1.55}
+.mc-campo textarea{resize:vertical;min-height:80px}
+.mc-ayuda{font-size:.85rem;color:var(--suave);margin:0 0 6px}
+.mc-h{font-size:1.5rem;margin:22px 0 10px}
+.mc-fila{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.mc-fila input{flex:1;min-width:180px;padding:10px 12px;border:1px solid var(--linea);border-radius:8px;background:var(--papel)}
+.mc-num{font-family:var(--titulo);font-size:1.4rem;color:var(--azul);min-width:1.4em}
+.mc-chico{padding:8px 12px;font-size:.88rem}
+.mc-tarjeta{background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:14px 16px;margin-bottom:12px;box-shadow:0 4px 24px rgba(0,0,0,.05)}
+.mc-tarjeta-cab{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.mc-opcion{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.mc-opcion input[type=text]{flex:1;padding:9px 12px;border:1px solid var(--linea);border-radius:8px;background:var(--papel)}
+.mc-opcion input[type=radio]{width:20px;height:20px;accent-color:var(--verde)}
+.mc-letra{font-weight:600;color:var(--azul);min-width:1.4em}
+.mc-pasar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px}
+.mc-resumen{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.mc-resumen div{background:var(--papel);border:1px solid var(--linea);border-radius:8px;padding:10px 12px}
+.mc-resumen strong{display:block;font-family:var(--titulo);font-size:1.8rem;font-weight:600;color:var(--azul)}
+.mc-resumen span{font-size:.85rem;color:var(--suave)}
+.tarea-dia .acciones{flex-wrap:wrap}
+.mc-aula{border:2px solid var(--oro);background:var(--azul-suave)}
+</style>
+</head>
+<body>
+<header class="barra">
+  <div class="envoltura">
+    <div class="marca"><span class="rf">RF</span>Roma Formación <small>Oficina</small></div>
+  </div>
+</header>
+
+<div class="hero-of">
+  <div class="hero-deco" aria-hidden="true"></div><div class="hero-deco2" aria-hidden="true"></div>
+  <div class="envoltura">
+  <span class="hero-tag">Oficina · Roma Formación</span>
+  <section class="cabecera">
+    <div>
+      <div class="reloj" id="reloj">--:--</div>
+      <p class="saludo" id="saludo"></p>
+      <div class="estado" id="estado"><span class="punto"></span><span id="estadoTexto">Fuera de jornada</span></div>
+      <div id="alertas"></div>
+      <button class="fichar" id="botonFichar"></button>
+      <p class="nota" id="notaPausa"></p>
+      <div class="franja" aria-label="Tu jornada de hoy, de 10 a 14">
+        <div class="franja-barra" id="franja"></div>
+        <div class="franja-horas"><span>10:00</span><span>11:00</span><span>12:00</span><span>13:00</span><span>14:00</span></div>
+      </div>
+      <div class="semana" id="semana"></div>
+      <div class="cifras" id="cifras"></div>
+    </div>
+    <div class="tarea-dia" id="tareaDia" aria-live="polite"></div>
+  </section>
+  </div>
+</div>
+<main class="envoltura">
+
+  <div class="pestanas" role="tablist" id="pestanas">
+    <button role="tab" data-p="micurso" aria-selected="true">✍️ Mi curso</button>
+    <button role="tab" data-p="diario" aria-selected="false">Lo que hice hoy</button>
+    <button role="tab" data-p="plan" aria-selected="false">El plan completo</button>
+    <button role="tab" data-p="cursos" aria-selected="false">Mis cursos</button>
+    <button role="tab" data-p="registro" aria-selected="false">Registro horario</button>
+    <button role="tab" data-p="copia" aria-selected="false">Copia de seguridad</button>
+  </div>
+
+  <section class="panel" data-panel="micurso">
+    <div class="mc-cabecera">
+      <div><span class="mc-etq">Estás escribiendo</span><h3 id="mcTitulo" style="margin:2px 0 0"></h3><span class="nota" id="mcSub"></span></div>
+      <span class="mc-guardado" id="mcGuardado" aria-live="polite">✓ Guardado</span>
+    </div>
+    <nav class="mc-nav" id="mcNav" aria-label="Partes del curso">
+      <button type="button" data-s="indice" aria-pressed="true">Índice</button>
+      <button type="button" data-s="temario" aria-pressed="false">Temario</button>
+      <button type="button" data-s="ejercicios" aria-pressed="false">Ejercicios</button>
+      <button type="button" data-s="examen" aria-pressed="false">Examen</button>
+      <button type="button" data-s="faq" aria-pressed="false">Preguntas frecuentes</button>
+      <button type="button" data-s="descargar" aria-pressed="false">⬇ Descargar</button>
+    </nav>
+    <div id="mcCaja"></div>
+  </section>
+
+  <section class="panel" data-panel="diario" hidden>
+    <div class="dos">
+      <div>
+        <h3>Lo que he hecho hoy</h3>
+        <p class="nota">Unas líneas antes de fichar la salida. Con el tiempo, aquí verás todo el trabajo que llevas.</p>
+        <textarea id="diarioHoy" placeholder="Hoy he terminado los temas 1 y 2 del curso de Empadronamiento…"></textarea>
+        <button class="boton" id="guardarDiario" style="margin-top:10px">Guardar</button>
+      </div>
+      <div><h3>Días anteriores</h3><div id="diarioLista"></div></div>
+    </div>
+  </section>
+
+  <section class="panel" data-panel="plan" hidden>
+    <p class="nota" style="max-width:46em;margin-bottom:16px">Una tarea por día. Si un día no trabajas, el plan te espera: la tarea de hoy es siempre la primera que no has terminado. El plan es el del curso que tienes desbloqueado en Mis cursos.</p>
+    <div id="planLista"></div>
+  </section>
+
+  <section class="panel" data-panel="cursos" hidden>
+    <div class="dos">
+      <div>
+        <h3>Tus cursos</h3>
+        <p class="nota">Aquí están todos los cursos de tu academia. Solo uno está desbloqueado: en ese trabajas cada día. Cuando quieras cambiar, desbloquea otro; lo que llevas hecho en cada curso se guarda.</p>
+        <div id="cursosLista" style="margin-top:12px"></div>
+      </div>
+      <div>
+        <h3>Añadir un curso</h3>
+        <form id="formCurso">
+          <div class="fila-form">
+            <div class="dos-cols">
+              <input type="text" id="cNombre" placeholder="Nombre del curso" aria-label="Nombre del curso" required>
+              <input type="text" id="cHoras" placeholder="Horas" aria-label="Horas del curso" inputmode="numeric">
+              <select id="cTipo" aria-label="Tipo de curso"><option>Gratis</option><option>Básico</option><option>Intensivo</option><option>Presencial</option></select>
+            </div>
+            <button class="boton" type="submit">Añadir</button>
+          </div>
+          <label style="display:block;margin-top:10px"><input type="checkbox" id="cHecho"> Ya está hecho en mi web (solo repasarlo)</label>
+        </form>
+        <div class="caja">
+          <h4>Cómo se forma el plan</h4>
+          <p>Primero, 5 días para preparar plantillas, mensajes y el registro de alumnos. Después, las tareas del curso desbloqueado, día a día. Lo que se tarda depende del tipo: gratis 5 días, básico 10, intensivo 25 y taller presencial 7.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" data-panel="registro" hidden>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+      <h3 style="margin:0">Registro de fichajes</h3>
+      <button class="boton secundario" id="botonCsv">Descargar registro (CSV)</button>
+    </div>
+    <div class="tabla-env"><table><thead><tr><th>Fecha</th><th>Entrada</th><th>Salida</th><th>Tiempo</th><th></th></tr></thead><tbody id="tablaRegistro"></tbody></table></div>
+  </section>
+
+  <section class="panel" data-panel="copia" hidden>
+    <h3>Copia de seguridad</h3>
+    <p class="nota" style="max-width:40em">Todo se guarda solo en este navegador. Descarga una copia de vez en cuando por si borras el historial o cambias de móvil, y restáurala si hace falta.</p>
+    <div class="herramientas" style="margin-top:12px">
+      <button class="boton secundario" id="botonCopia">Descargar copia</button>
+      <label class="boton secundario" style="cursor:pointer">Restaurar copia<input type="file" id="archivoCopia" accept="application/json,.json" class="oculto"></label>
+    </div>
+  </section>
+</main>
+
+<div class="guardado" id="guardado" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+var LS="rf-oficina";
+function hoyStr(d){ var x=d||new Date(); return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0"); }
+function idNuevo(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+
+var CATALOGO=[
+  ["c-jard","Jardinería y Naturaleza","Gratis","7",true],["c-empa","Empadronamiento y Documentación","Gratis","6",true],["c-info","Informática para el Día a Día","Gratis","8",true],
+  ["w-cita","Cita Previa en Organismos Públicos","Gratis","3",false],["w-cv","Cómo Hacer un Buen Currículum","Gratis","3",false],["w-movil","Primeros Pasos con el Móvil","Gratis","4",false],
+  ["w-fisc","Fiscalidad Básica para Particulares","Básico","10",false],["w-sede","Trámites Online: Sede Electrónica","Básico","8",false],["w-lab","Orientación Laboral y Contratos","Básico","8",false],
+  ["w-sepe","Prestaciones y Trámites del SEPE","Básico","12",false],["w-auto","Emprendimiento y Autónomos","Básico","12",false],["w-dgnd","Diseño Gráfico para No Diseñadores","Básico","10",false],
+  ["w-foto","Fotografía Básica con el Móvil","Básico","7",false],["w-ingl","Comunicación Profesional en Inglés","Básico","15",false],["w-auxi","Primeros Auxilios Básicos","Básico","6",false],
+  ["w-mind","Mindfulness y Bienestar Personal","Básico","8",false],["w-excel","Excel Práctico para el Trabajo","Básico","15",false],["w-redes","Redes Sociales para Pequeños Negocios","Básico","12",false],
+  ["w-escr","Escritura Creativa: Tu Primer Relato","Básico","15",false],
+  ["w-tram","Tramitación con Admin. Pública","Intensivo","70",false],["w-aten","Atención al Cliente y Recepción","Intensivo","40",false],["w-dneg","Diseño Gráfico para Negocios","Intensivo","50",false],
+  ["w-mjar","Mantenimiento de Jardines","Intensivo","60",false],["w-apub","Autopublicación: del Manuscrito al Libro","Intensivo","40",false],
+  ["w-gest","Gestión Administrativa","Presencial","60",false],["w-extr","Extranjería y Residencia Legal","Presencial","65",false],
+  ["w-tmay","Trámites Online para Mayores","Presencial","8",false],["w-imay","Informática y Móvil para Mayores","Presencial","10",false],["w-cvent","Currículum y Entrevista de Trabajo","Presencial","6",false]
+];
+var est={ fichajes:[], hechas:{}, diario:{}, completadas:{}, cursos:[] };
+try{ var g=localStorage.getItem(LS); if(g) est=Object.assign(est,JSON.parse(g)); }catch(e){}
+est.completadas=est.completadas||{};
+if(!est.catalogo3){
+  var previos={}; est.cursos.forEach(function(c){ previos[c.id]=c; });
+  var oficiales={}; CATALOGO.forEach(function(r){ oficiales[r[0]]=1; });
+  var nuevos=CATALOGO.map(function(r){ var antes=previos[r[0]]; return {id:r[0],nombre:r[1],tipo:r[2],horas:r[3],hecho:r[4],aparcado:antes?!!antes.aparcado:false}; });
+  /* cursos que añadiste tú a mano (no los de la lista anterior) se conservan al final */
+  est.cursos.forEach(function(c){ if(!oficiales[c.id] && c.id.indexOf("k-")!==0 && c.id.indexOf("c-")===0 && ["c-jard","c-empa","c-info"].indexOf(c.id)<0) nuevos.push(c); });
+  est.cursos=nuevos; est.catalogo3=true; est.catalogo2=true;
+  try{ localStorage.setItem(LS,JSON.stringify(est)); }catch(e){}
+}
+if(!est.activo || !est.cursos.some(function(c){return c.id===est.activo;})){ est.activo="w-mjar"; try{ localStorage.setItem(LS,JSON.stringify(est)); }catch(e){} }
+function cursoActivo(){ return est.cursos.find(function(c){return c.id===est.activo;}); }
+function guardar(){ try{ localStorage.setItem(LS,JSON.stringify(est)); }catch(e){ aviso("No se pudo guardar en este navegador"); } }
+var tAviso=null;
+function aviso(t){ var el=document.getElementById("guardado"); el.textContent=t; el.classList.add("ver"); clearTimeout(tAviso); tAviso=setTimeout(function(){el.classList.remove("ver");},2400); }
+function bajar(nombre,texto,tipo){ var url=URL.createObjectURL(new Blob([texto],{type:tipo})); var a=document.createElement("a"); a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},1500); }
+
+/* ---------- el plan ---------- */
+function T(t,pasos,res){ return {t:t,pasos:pasos,res:res}; }
+var INICIO=[
+  T("Ordenar el trabajo",["En la pestaña Mis cursos, comprueba qué curso tienes activado: es en el que vas a trabajar.","En Google Drive o en tu ordenador, crea una carpeta «Roma Formación».","Dentro, crea una carpeta para tu curso activado. Las de los demás cursos las irás creando cuando los empieces."],"tu carpeta de trabajo lista para empezar."),
+  T("Plantilla del temario",["Abre Google Docs, Word o Canva y crea un documento nuevo.","Página 1, portada: el logo RF, «Roma Formación» y un hueco para el nombre del curso.","Página 2, índice: la lista de temas.","Página 3, cómo es un tema: título, «Qué vas a aprender», la explicación con pasos numerados, un recuadro de «Importante» y un resumen al final.","Guárdalo como PLANTILLA TEMARIO."],"un documento modelo. Para cada curso harás una copia y solo rellenarás."),
+  T("Plantillas de examen, corrección y diploma",["Examen: hueco para nombre y fecha, 10 preguntas tipo test, 2 preguntas prácticas y al final «Envía este examen por WhatsApp o correo a tu tutor».","Hoja de corrección: el mismo examen con las respuestas correctas y los puntos (por ejemplo, 1 punto por pregunta; con 7 se aprueba).","Diploma: en Canva, con el estilo del de tu web, dejando huecos para nombre, curso y fecha."],"tres plantillas guardadas."),
+  T("Mensajes tipo y registro de alumnos",["En una nota del móvil escribe el mensaje de bienvenida: «Hola, [nombre]. Bienvenido al curso de [curso]. Te adjunto el material. Empieza por la guía del alumno. Si te atascas, escríbeme por aquí».","Escribe también el de respuesta a una duda, el de entrega del diploma y un recordatorio para quien lleve tiempo sin dar señales.","Crea una hoja en Google Sheets con columnas: nombre, teléfono, curso, fecha de envío, pagado, examen recibido, nota y diploma enviado."],"tus mensajes listos para copiar y pegar, y tu lista de alumnos."),
+  T("Guía del alumno y preguntas frecuentes",["Guía del alumno (una página): en qué orden estudiar, cuánto se tarda, cómo hacer y mandar el examen y cómo contactar con el tutor.","Preguntas frecuentes: las 10 dudas que creas que tendrá la gente, por ejemplo «¿Tengo fecha límite?», «¿Qué pasa si suspendo?» o «¿Cuándo recibo el diploma?», cada una con su respuesta."],"dos documentos que acompañarán a todos los cursos.")
+];
+var REPASO=[
+  T("Repasar el temario",["Abre el curso en tu web y hazlo entero como si fueras un alumno.","Apunta lo que no se entienda, esté desactualizado o falle.","Corrige lo que hayas apuntado."],"el temario revisado y al día."),
+  T("Repasar ejercicios y examen",["Haz los ejercicios y el examen tú mismo.","Comprueba que las respuestas correctas están bien.","Prepara su hoja de corrección con tu plantilla."],"el examen comprobado y su hoja de corrección."),
+  T("Paquete y preguntas frecuentes",["Guarda en la carpeta del curso todo lo que le mandarías a un alumno.","Escribe las 5 dudas que más se repetirán en este curso, con su respuesta."],"el curso listo para enviar.")
+];
+var GRATIS=[
+  T("Índice y objetivos",["Haz una copia de tu PLANTILLA TEMARIO en la carpeta del curso.","Decide 2 o 3 temas cortos.","Escribe en una frase qué sabrá hacer el alumno al terminar."],"el índice del curso."),
+  T("Escribir el temario",["Escribe todos los temas, paso a paso y con ejemplos reales.","Añade capturas de pantalla donde ayuden.","Léelo como si no supieras nada del tema."],"el temario completo."),
+  T("Ejercicios y examen",["Haz 3 o 4 ejercicios con las soluciones al final.","Con tu plantilla, haz un examen corto (10 preguntas tipo test).","Prepara la hoja de corrección."],"ejercicios, examen y corrección."),
+  T("PDF y preguntas frecuentes",["Junta temario, ejercicios y examen en un PDF bien presentado.","Escribe las 5 dudas más típicas con su respuesta."],"el paquete del curso."),
+  T("Probar y cerrar",["Hazlo tú como alumno y pídele a alguien de confianza que lo pruebe.","Corrige lo que falle."],"el curso terminado.")
+];
+var BASICO=[
+  T("Índice y objetivos",["Haz una copia de tu PLANTILLA TEMARIO en la carpeta del curso.","Decide los temas (unos 5) y apúntalos en el índice.","Escribe qué sabrá hacer el alumno al terminar."],"el índice del curso."),
+  T("Temas 1 y 2",["Escribe los temas 1 y 2 con tu plantilla: qué vas a aprender, explicación con pasos y recuadro de «Importante».","Usa ejemplos reales, como si el alumno estuviera solo."],"dos temas escritos."),
+  T("Temas 3 y 4",["Escribe los temas 3 y 4 con el mismo estilo."],"cuatro temas escritos."),
+  T("Último tema y capturas",["Escribe el último tema.","Añade capturas de pantalla en los pasos que lo necesiten."],"el temario completo."),
+  T("Ejercicios con soluciones",["Haz un ejercicio por tema, con las soluciones al final del documento."],"los ejercicios del curso."),
+  T("Examen y hoja de corrección",["Con tu plantilla, haz el examen final: 10 preguntas tipo test y 2 prácticas.","Prepara la hoja de corrección con respuestas y puntos."],"examen y corrección."),
+  T("Preguntas frecuentes del curso",["Escribe las dudas que más se repetirán en este curso, con su respuesta."],"las preguntas frecuentes."),
+  T("Pasarlo a PDF",["Junta temario, ejercicios y examen en el paquete que mandarás por WhatsApp o correo.","Revisa que se vea bien en el móvil."],"el paquete del curso."),
+  T("Probarlo",["Hazlo tú como alumno de principio a fin.","Mándaselo a alguien de confianza para que lo pruebe y te diga qué no entiende."],"el curso probado."),
+  T("Corregir y cerrar",["Arregla lo que haya fallado en la prueba.","Guárdalo todo en su carpeta."],"el curso terminado.")
+];
+var INTENSIVO=[T("Índice, módulos y objetivos",["Divide el curso en 5 módulos y cada módulo en varios temas.","Escribe qué sabrá hacer el alumno al terminar y qué hará en las prácticas."],"el mapa completo del curso.")];
+for(var m=1;m<=5;m++){
+  INTENSIVO.push(T("Módulo "+m+": primera parte",["Escribe la primera mitad de los temas del módulo "+m+" con tu plantilla."],"medio módulo escrito."));
+  INTENSIVO.push(T("Módulo "+m+": segunda parte",["Escribe el resto de temas del módulo "+m+" y añade capturas donde ayuden."],"el módulo "+m+" escrito."));
+  INTENSIVO.push(T("Módulo "+m+": ejercicios",["Haz los ejercicios del módulo "+m+" con sus soluciones."],"el módulo "+m+" terminado."));
+}
+INTENSIVO=INTENSIVO.concat([
+  T("Caso práctico final (1)",["Inventa un caso real completo que el alumno tenga que resolver usando todo lo aprendido."],"el enunciado del caso práctico."),
+  T("Caso práctico final (2)",["Escribe la solución del caso práctico paso a paso, para corregirlo."],"el caso práctico con su solución."),
+  T("Examen y hoja de corrección",["Haz el examen final con tu plantilla, más largo que en los básicos.","Prepara la hoja de corrección."],"examen y corrección."),
+  T("Guía de prácticas",["Escribe qué hará el alumno en las prácticas, cuántas horas y qué se valorará."],"la guía de prácticas."),
+  T("Preguntas frecuentes",["Escribe las dudas más típicas del curso, con su respuesta."],"las preguntas frecuentes."),
+  T("Pasarlo a PDF (1)",["Junta los módulos 1 a 3 en el formato final."],"media maqueta."),
+  T("Pasarlo a PDF (2)",["Junta los módulos 4 y 5, el caso práctico y el examen."],"el paquete completo."),
+  T("Probarlo",["Pide a alguien de confianza que haga al menos un módulo entero y te diga qué no entiende."],"el curso probado."),
+  T("Corregir y cerrar",["Arregla lo que haya fallado y guárdalo todo en su carpeta."],"el curso terminado.")
+]);
+var PRESENCIAL=[
+  T("Objetivos y guion del taller",["Decide qué aprenderán los asistentes.","Reparte las horas del taller: qué se hace en cada parte."],"el guion del taller."),
+  T("Presentación para proyectar",["Prepara las diapositivas en Canva o PowerPoint, con letra grande y pocas palabras."],"la presentación."),
+  T("Ejercicios para hacer en clase",["Prepara ejercicios sencillos para que los asistentes practiquen en el momento."],"los ejercicios del taller."),
+  T("Hoja resumen para llevarse",["Haz una hoja imprimible con lo más importante del taller."],"la hoja resumen."),
+  T("Hoja de asistencia y diploma",["Prepara la hoja para apuntar a los asistentes y adapta tu diploma al taller."],"asistencia y diploma listos."),
+  T("Ensayar",["Haz el taller en voz alta y cronométralo.","Ajusta lo que se alargue o se quede corto."],"el taller ensayado."),
+  T("Cerrar y buscar sitio",["Revisa todo el material.","Apunta posibles sitios para darlo: biblioteca, centro social, asociación de mayores."],"el taller terminado.")
+];
+var FINAL=[
+  T("Revisar con lo que te han dicho",["Repasa las opiniones de tus probadores y corrige lo pendiente en todos los cursos."],"todos los cursos al día."),
+  T("Paquetes listos para enviar",["Comprueba que cada curso tiene su carpeta con todo lo que se manda al alumno."],"cada curso listo para enviar en un minuto."),
+  T("Lista de dónde buscar alumnos",["Apunta asociaciones, centros de mayores, AMPAs y asociaciones de la zona a las que les sirvan tus cursos."],"tu lista de sitios."),
+  T("Preguntar antes de cobrar",["Infórmate en el SEPE de qué tienes que hacer para empezar a cobrar los cursos cuando termine el paro."],"claro cómo empezar sin problemas."),
+  T("Todo listo para abrir",["Haz un repaso general de la academia y de tus cursos."],"la academia preparada.")
+];
+var PASOS={"Gratis":["g",GRATIS],"Básico":["n",BASICO],"Intensivo":["i",INTENSIVO],"Presencial":["p",PRESENCIAL]};
+function pasosDe(c){ if(c.hecho) return ["r",REPASO]; if(c.tipo==="Presencial" && Number(c.horas)>=30) return ["i",INTENSIVO]; return PASOS[c.tipo]||PASOS["Básico"]; }
+function diasDe(c){ return pasosDe(c)[1].length; }
+function construirPlan(){
+  var p=[];
+  INICIO.forEach(function(x,i){ p.push({k:"ini-"+i,grupo:"Preparar el trabajo",curso:"",t:x.t,pasos:x.pasos,res:x.res,pos:i+1,de:INICIO.length}); });
+  var c=cursoActivo();
+  if(c){ var ps=pasosDe(c); ps[1].forEach(function(x,i){ p.push({k:c.id+"-"+ps[0]+i,grupo:c.nombre,curso:c.nombre,cursoId:c.id,t:x.t,pasos:x.pasos,res:x.res,pos:i+1,de:ps[1].length}); }); }
+  return p;
+}
+function indiceActual(plan){ for(var i=0;i<plan.length;i++){ if(!est.hechas[plan[i].k]) return i; } return -1; }
+
+/* ---------- tiempo ---------- */
+var DIAS=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+var MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+function hm(ts){ var d=new Date(ts); return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
+function dur(min){ min=Math.round(min); var h=Math.floor(min/60), m=min%60; return h?(h+" h"+(m?" "+String(m).padStart(2,"0")+" min":"")):m+" min"; }
+function abierto(){ return est.fichajes.find(function(f){return !f.out;}); }
+function minutosDia(fecha){ return est.fichajes.filter(function(f){return f.d===fecha;}).reduce(function(s,f){return s+((f.out||Date.now())-f.in)/60000;},0); }
+function lunesDe(d){ var x=new Date(d); x.setHours(0,0,0,0); x.setDate(x.getDate()-((x.getDay()+6)%7)); return x; }
+
+function fichar(){
+  var ab=abierto();
+  if(ab){ ab.out=Date.now(); aviso("Salida fichada a las "+hm(ab.out)); }
+  else { est.fichajes.push({d:hoyStr(),in:Date.now(),out:null}); aviso("Entrada fichada a las "+hm(Date.now())); }
+  guardar(); pintarFichaje(); pintarSemana(); pintarRegistro();
+}
+function pintarFichaje(){
+  var ahora=new Date(), ab=abierto(), h=ahora.getHours(), finde=ahora.getDay()===0||ahora.getDay()===6;
+  document.getElementById("reloj").textContent=hm(ahora);
+  document.getElementById("saludo").textContent=(h<14?"Buenos días":h<21?"Buenas tardes":"Buenas noches")+", Rafa. Hoy es "+DIAS[ahora.getDay()]+", "+ahora.getDate()+" de "+MESES[ahora.getMonth()]+".";
+  var al=document.getElementById("alertas"); al.innerHTML="";
+  if(ab && ab.d!==hoyStr()){
+    var div=document.createElement("div"); div.className="alerta"; div.textContent="Te quedó abierta la jornada del "+ab.d.split("-").reverse().join("/")+". ";
+    var bt=document.createElement("button"); bt.className="boton secundario"; bt.textContent="Cerrarla a las 14:00";
+    bt.onclick=function(){ ab.out=Math.max(ab.in+60000,new Date(ab.d+"T14:00:00").getTime()); guardar(); pintarTodo(); };
+    div.appendChild(bt); al.appendChild(div);
+  }
+  var est2=document.getElementById("estado"), et=document.getElementById("estadoTexto"), b=document.getElementById("botonFichar"), np=document.getElementById("notaPausa");
+  if(ab){
+    est2.classList.add("trabajando");
+    et.textContent="Trabajando desde las "+hm(ab.in)+", llevas "+dur((Date.now()-ab.in)/60000);
+    b.className="fichar salida"; b.innerHTML="Fichar salida<small>Hoy suman "+dur(minutosDia(hoyStr()))+"</small>";
+    var p=new Date(); p.setMinutes(0,0,0); p.setHours(p.getHours()+1);
+    np.textContent=h>=14?"Ya son más de las 14:00. Escribe lo que has hecho hoy, ficha la salida y descansa.":(h===12&&ahora.getMinutes()<15?"Ahora toca la pausa de 15 minutos.":"Próxima pausa a las "+hm(p)+": levántate y camina cinco minutos.");
+  } else {
+    est2.classList.remove("trabajando");
+    var hecho=minutosDia(hoyStr());
+    et.textContent=hecho>0?"Fuera de jornada. Hoy llevas "+dur(hecho):"Fuera de jornada";
+    b.className="fichar"; b.innerHTML="Fichar entrada<small>"+(finde?"Es fin de semana, tu horario es de lunes a viernes":(h<10?"Tu jornada empieza a las 10:00":h<14?"Tu horario es de 10:00 a 14:00":"Tu horario de hoy ya terminó"))+"</small>";
+    np.textContent=finde?"El fin de semana también es parte del trabajo: descansar.":"";
+  }
+  var s=document.getElementById("franja"); s.innerHTML="";
+  var base=new Date(); base.setHours(10,0,0,0); var T=4*3600e3;
+  est.fichajes.filter(function(f){return f.d===hoyStr();}).forEach(function(f){
+    var i=Math.max(0,f.in-base), o=Math.min(T,(f.out||Date.now())-base); if(o<=0||i>=T) return;
+    var d=document.createElement("div"); d.className="tramo"; d.style.left=(i/T*100)+"%"; d.style.width=Math.max(.5,(o-i)/T*100)+"%"; s.appendChild(d);
+  });
+  var n=Date.now()-base; if(n>=0&&n<=T){ var m=document.createElement("div"); m.className="ahora"; m.style.left="calc("+(n/T*100)+"% - 1px)"; s.appendChild(m); }
+}
+function pintarSemana(){
+  var lun=lunesDe(new Date()), c=document.getElementById("semana"); c.innerHTML="";
+  var et=["L","M","X","J","V"], total=0;
+  for(var i=0;i<5;i++){
+    var d=new Date(lun); d.setDate(lun.getDate()+i); var f=hoyStr(d), min=minutosDia(f); total+=min;
+    var el=document.createElement("div"); el.className="dia"+(f===hoyStr()?" hoy":"");
+    el.innerHTML="<b>"+et[i]+"</b><div class='barrita'><i style='height:"+Math.min(100,min/240*100).toFixed(0)+"%'></i></div><span>"+(min>0?dur(min):"—")+"</span>";
+    c.appendChild(el);
+  }
+  var plan=construirPlan(), hechas=plan.filter(function(x){return est.hechas[x.k];}).length;
+  var listos=est.cursos.filter(function(cc){ var pr=progresoCurso(cc); return pr[0]===pr[1]; }).length;
+  var totalMin=est.fichajes.reduce(function(s2,f){return s2+((f.out||Date.now())-f.in)/60000;},0);
+  document.getElementById("cifras").innerHTML="<div><strong>"+dur(total)+"</strong>de 20 h esta semana</div><div><strong>"+Math.round(totalMin/60)+" h</strong>trabajadas en total</div><div><strong>"+listos+" de "+est.cursos.length+"</strong>cursos terminados</div>";
+}
+
+/* ---------- tarea del día ---------- */
+function pintarTarea(){
+  var plan=construirPlan(), i=indiceActual(plan), c=document.getElementById("tareaDia"); c.innerHTML="";
+  var hechas=plan.filter(function(x){return est.hechas[x.k];}).length;
+  if(i<0){
+    c.innerHTML="<div class='que'>Curso terminado</div><h2 class='terminado'>¡Enhorabuena!</h2><p>Has terminado el curso en el que estabas trabajando. Ve a Mis cursos y desbloquea el siguiente.</p>";
+    return;
+  }
+  var x=plan[i];
+  var que=document.createElement("div"); que.className="que"; que.textContent="Tarea de hoy"; c.appendChild(que);
+  var cu=document.createElement("div"); cu.className="curso"; cu.textContent=x.curso?("Curso: "+x.curso):x.grupo;
+  var dc=document.createElement("span"); dc.className="dia-curso"; dc.textContent="día "+x.pos+" de "+x.de; cu.appendChild(dc); c.appendChild(cu);
+  var h=document.createElement("h2"); h.textContent=x.t; c.appendChild(h);
+  var ol=document.createElement("ol"); x.pasos.forEach(function(ps){ var li=document.createElement("li"); li.textContent=ps; ol.appendChild(li); }); c.appendChild(ol);
+  var r=document.createElement("div"); r.className="resultado"; var rb=document.createElement("b"); rb.textContent="Al terminar tienes: "; r.append(rb,document.createTextNode(x.res)); c.appendChild(r);
+  var acc=document.createElement("div"); acc.className="acciones";
+  var bt=document.createElement("button"); bt.className="boton verde"; bt.textContent="Tarea terminada";
+  bt.onclick=function(){ est.hechas[x.k]=true; est.completadas[x.k]=hoyStr(); guardar(); aviso("¡Bien! Tarea terminada"); pintarTodo(); };
+  acc.appendChild(bt);
+  if(x.cursoId){ var ir=document.createElement("button"); ir.className="boton secundario"; ir.textContent="✍️ Escribir en Mi curso";
+    ir.onclick=function(){ var t=x.t.toLowerCase(); mcSeccion=/examen|corrección/.test(t)?"examen":/ejercicio/.test(t)?"ejercicios":/preguntas frecuentes/.test(t)?"faq":/pdf|probar|cerrar/.test(t)?"descargar":/índice|objetivo|módulos/.test(t)?"indice":"temario";
+      document.querySelectorAll("#pestanas button").forEach(function(z){z.setAttribute("aria-selected",z.dataset.p==="micurso"?"true":"false");});
+      document.querySelectorAll(".panel").forEach(function(p){p.hidden=p.dataset.panel!=="micurso";});
+      pintarMiCurso(true); document.getElementById("pestanas").scrollIntoView({behavior:"smooth"}); };
+    acc.appendChild(ir); }
+  c.appendChild(acc);
+  var pr=document.createElement("div"); pr.className="progreso"; pr.innerHTML="<i style='width:"+(hechas/plan.length*100).toFixed(1)+"%'></i>"; c.appendChild(pr);
+  var pn=document.createElement("div"); pn.className="nota"; pn.textContent=hechas+" de "+plan.length+" tareas del plan hechas"; c.appendChild(pn);
+  if(plan[i+1]){ var sg=document.createElement("div"); sg.className="siguiente"; sg.textContent="Después: "+(plan[i+1].curso?plan[i+1].curso+", ":"")+plan[i+1].t.toLowerCase()+"."; c.appendChild(sg); }
+}
+function pintarPlan(){
+  var plan=construirPlan(), act=indiceActual(plan), c=document.getElementById("planLista"); c.innerHTML="";
+  var grupos=[], porGrupo={};
+  plan.forEach(function(x,i){ var g=x.grupo; if(!porGrupo[g]){ porGrupo[g]=[]; grupos.push(g); } porGrupo[g].push({x:x,i:i}); });
+  grupos.forEach(function(g){
+    var items=porGrupo[g], hechas=items.filter(function(o){return est.hechas[o.x.k];}).length;
+    var esActual=items.some(function(o){return o.i===act;});
+    var b=document.createElement("article"); b.className="bloque-plan"+(esActual?" actual":"");
+    var hd=document.createElement("header"); var h4=document.createElement("h4"); h4.textContent=g;
+    var pr=document.createElement("span"); pr.className="prog"; pr.textContent=hechas+" de "+items.length+" tareas hechas";
+    hd.append(h4,pr); b.appendChild(hd);
+    var det=document.createElement("details"); if(esActual) det.open=true; det.innerHTML="<summary>Ver tareas</summary>";
+    var ul=document.createElement("ul"); ul.className="lista";
+    items.forEach(function(o){
+      var li=document.createElement("li"); if(est.hechas[o.x.k]) li.className="hecha"; else if(o.i===act) li.className="actual";
+      var n=document.createElement("span"); n.className="n"; n.textContent="Día "+o.x.pos;
+      var id="p"+o.i; var cb=document.createElement("input"); cb.type="checkbox"; cb.id=id; cb.checked=!!est.hechas[o.x.k];
+      cb.onchange=function(){ if(cb.checked){ est.hechas[o.x.k]=true; est.completadas[o.x.k]=hoyStr(); } else { delete est.hechas[o.x.k]; delete est.completadas[o.x.k]; } guardar(); pintarTodo(); };
+      var lb=document.createElement("label"); lb.htmlFor=id; lb.textContent=o.x.t;
+      li.append(n,cb,lb); ul.appendChild(li);
+    });
+    det.appendChild(ul); b.appendChild(det); c.appendChild(b);
+  });
+}
+
+/* ---------- cursos ---------- */
+function progresoCurso(cu){ var ps=pasosDe(cu); var h=ps[1].filter(function(_,i){ return est.hechas[cu.id+"-"+ps[0]+i]; }).length; return [h,ps[1].length]; }
+function pintarCursos(){
+  var c=document.getElementById("cursosLista"); c.innerHTML="";
+  var orden=est.cursos.slice().sort(function(a,b){ return (a.id===est.activo?-1:0)-(b.id===est.activo?-1:0); });
+  orden.forEach(function(cu){
+    var pr=progresoCurso(cu), activo=cu.id===est.activo, listo=pr[0]===pr[1];
+    var el=document.createElement("div"); el.className="curso-o"+(activo?" activo":(listo?"":" bloqueado"));
+    var ic=document.createElement("span"); ic.className="num"; ic.textContent=activo?"▶":(listo?"✓":"🔒"); ic.setAttribute("aria-hidden","true");
+    var nm=document.createElement("div"); nm.className="nom"; var bb=document.createElement("b"); bb.textContent=cu.nombre;
+    var sp=document.createElement("span"); sp.textContent=cu.tipo+(cu.horas?" · "+cu.horas+" h":"")+" · "+pr[1]+" días de trabajo"; nm.append(bb,sp);
+    var eti=document.createElement("span"); eti.className="etiqueta"+(listo?" listo":"");
+    eti.textContent=activo?("Trabajando · "+pr[0]+"/"+pr[1]):(listo?"Terminado":(pr[0]?"En pausa · "+pr[0]+"/"+pr[1]:"Bloqueado"));
+    el.append(ic,nm,eti);
+    if(activo){
+      var av=document.createElement("div"); av.className="aviso-activo";
+      av.textContent="Este es tu curso ahora. No tienes que pulsar nada aquí: sus tareas te salen cada día en «Tarea de hoy».";
+      el.appendChild(av);
+    }
+    if(!activo){
+      var bt=document.createElement("button"); bt.className="boton secundario cambiar"; bt.textContent="🔓 Trabajar en este curso";
+      bt.onclick=function(){
+        if(!bt.dataset.listo){
+          bt.dataset.listo="1"; bt.textContent="Toca otra vez para confirmar"; bt.classList.add("confirmar");
+          setTimeout(function(){ if(bt.isConnected){ delete bt.dataset.listo; bt.textContent="🔓 Trabajar en este curso"; bt.classList.remove("confirmar"); } },4000);
+          return;
+        }
+        est.activo=cu.id; guardar(); pintarTodo(); aviso("Ahora trabajas en "+cu.nombre+". Tus tareas salen en «Tarea de hoy».");
+        window.scrollTo({top:0,behavior:"smooth"});
+      };
+      el.appendChild(bt);
+    }
+    c.appendChild(el);
+  });
+}
+
+/* ---------- diario ---------- */
+function pintarDiario(){
+  var ta=document.getElementById("diarioHoy"); if(document.activeElement!==ta) ta.value=est.diario[hoyStr()]||"";
+  var c=document.getElementById("diarioLista"); c.innerHTML="";
+  var plan=construirPlan(), porDia={};
+  plan.forEach(function(x){ var f=est.completadas[x.k]; if(f){ (porDia[f]=porDia[f]||[]).push((x.curso?x.curso+": ":"")+x.t); } });
+  var fechas=Object.keys(Object.assign({},est.diario,porDia)).filter(function(f){return f!==hoyStr();}).sort().reverse().slice(0,30);
+  if(!fechas.length){ c.innerHTML="<p class='vacio'>Aquí aparecerán tus días de trabajo.</p>"; return; }
+  fechas.forEach(function(f){
+    var d=document.createElement("div"); d.className="diario-dia";
+    var fe=new Date(f+"T12:00:00"); var b=document.createElement("b"); b.textContent=DIAS[fe.getDay()]+", "+fe.getDate()+" de "+MESES[fe.getMonth()]+(minutosDia(f)>0?" · "+dur(minutosDia(f)):"");
+    d.appendChild(b);
+    if(est.diario[f]){ var p=document.createElement("p"); p.textContent=est.diario[f]; d.appendChild(p); }
+    if(porDia[f]){ var h=document.createElement("div"); h.className="hechas"; h.textContent="Tareas terminadas: "+porDia[f].join(" · "); d.appendChild(h); }
+    c.appendChild(d);
+  });
+}
+
+/* ---------- registro ---------- */
+function pintarRegistro(){
+  var tb=document.getElementById("tablaRegistro"); tb.innerHTML="";
+  var lista=est.fichajes.slice().sort(function(a,b){return b.in-a.in;}).slice(0,60);
+  if(!lista.length){ tb.innerHTML="<tr><td colspan='5' class='vacio'>Tu primer fichaje aparecerá aquí.</td></tr>"; return; }
+  lista.forEach(function(f){
+    var tr=document.createElement("tr"), fe=new Date(f.d+"T12:00:00");
+    tr.innerHTML="<td>"+DIAS[fe.getDay()].slice(0,3)+" "+f.d.split("-").reverse().join("/")+"</td><td>"+hm(f.in)+"</td><td>"+(f.out?hm(f.out):"en curso")+"</td><td>"+dur(((f.out||Date.now())-f.in)/60000)+"</td>";
+    var td=document.createElement("td"), q=document.createElement("button"); q.className="quitar"; q.textContent="Borrar"; q.style.fontSize=".85rem";
+    q.onclick=function(){ if(!q.dataset.listo){ q.dataset.listo="1"; q.textContent="¿Seguro? Toca otra vez"; setTimeout(function(){ if(q.isConnected){ delete q.dataset.listo; q.textContent="Borrar"; } },4000); return; } est.fichajes=est.fichajes.filter(function(z){return z!==f;}); guardar(); pintarTodo(); };
+    td.appendChild(q); tr.appendChild(td); tb.appendChild(tr);
+  });
+}
+
+/* ---------- MI CURSO: escribir el curso desde la oficina ---------- */
+var mcSeccion="indice", mcTema=0, mcPintadoPara=null, tGuardar=null;
+function contenidoDe(id){
+  est.contenido=est.contenido||{};
+  if(!est.contenido[id]) est.contenido[id]={objetivos:"",publico:"",temas:[],ejercicios:[],test:[],practicas:[],faq:[]};
+  var c=est.contenido[id]; ["temas","ejercicios","test","practicas","faq"].forEach(function(k){ c[k]=c[k]||[]; });
+  return c;
+}
+function guardarLuego(){ clearTimeout(tGuardar); var g=document.getElementById("mcGuardado"); if(g) g.textContent="Guardando…"; tGuardar=setTimeout(function(){ guardar(); if(g) g.textContent="✓ Guardado"; },600); }
+function el(tag,attrs,txt){ var e=document.createElement(tag); if(attrs) Object.keys(attrs).forEach(function(k){ if(k==="class") e.className=attrs[k]; else e.setAttribute(k,attrs[k]); }); if(txt!=null) e.textContent=txt; return e; }
+function campo(etiqueta,valor,onInput,opc){
+  opc=opc||{};
+  var w=el("div",{class:"mc-campo"}); var id="mc"+Math.random().toString(36).slice(2);
+  var l=el("label",{for:id},etiqueta); w.appendChild(l);
+  if(opc.ayuda){ w.appendChild(el("div",{class:"mc-ayuda"},opc.ayuda)); }
+  var i=opc.linea?el("input",{type:"text",id:id}):el("textarea",{id:id});
+  if(!opc.linea && opc.alto) i.style.minHeight=opc.alto+"px";
+  if(opc.ph) i.placeholder=opc.ph;
+  i.value=valor||""; i.addEventListener("input",function(){ onInput(i.value); guardarLuego(); });
+  w.appendChild(i); return w;
+}
+function botonQuitar(texto,fn){
+  var b=el("button",{type:"button",class:"quitar"},texto);
+  b.onclick=function(){ if(!b.dataset.listo){ b.dataset.listo="1"; b.textContent="¿Seguro? Toca otra vez"; setTimeout(function(){ if(b.isConnected){ delete b.dataset.listo; b.textContent=texto; } },4000); return; } fn(); };
+  return b;
+}
+function pintarMiCurso(forzar){
+  var cu=cursoActivo(), box=document.getElementById("mcCaja"); if(!box) return;
+  if(!forzar && mcPintadoPara===est.activo+"|"+mcSeccion+"|"+mcTema) return;
+  mcPintadoPara=est.activo+"|"+mcSeccion+"|"+mcTema;
+  document.getElementById("mcTitulo").textContent=cu?cu.nombre:"Ningún curso activado";
+  document.getElementById("mcSub").textContent=cu?(cu.tipo+(cu.horas?" · "+cu.horas+" horas":"")):"";
+  document.querySelectorAll("#mcNav button").forEach(function(b){ b.setAttribute("aria-pressed",b.dataset.s===mcSeccion?"true":"false"); });
+  box.innerHTML="";
+  if(!cu) return;
+  var C=contenidoDe(cu.id);
+
+  if(mcSeccion==="indice"){
+    box.appendChild(campo("Qué aprenderá el alumno",C.objetivos,function(v){C.objetivos=v;},{alto:110,ph:"Al terminar el curso sabrás…"}));
+    box.appendChild(campo("Para quién es",C.publico,function(v){C.publico=v;},{alto:70,ph:"Personas que quieren trabajar en…"}));
+    box.appendChild(el("h4",{class:"mc-h"},"Temas del curso"));
+    if(!C.temas.length) box.appendChild(el("p",{class:"vacio"},"Todavía no hay temas. Añade el primero."));
+    C.temas.forEach(function(t,i){
+      var f=el("div",{class:"mc-fila"});
+      f.appendChild(el("span",{class:"mc-num"},String(i+1)));
+      var inp=el("input",{type:"text","aria-label":"Título del tema "+(i+1)}); inp.value=t.titulo||""; inp.placeholder="Título del tema";
+      inp.addEventListener("input",function(){ t.titulo=inp.value; guardarLuego(); });
+      f.appendChild(inp);
+      var ab=el("button",{type:"button",class:"boton secundario mc-chico"},"Escribir");
+      ab.onclick=function(){ mcSeccion="temario"; mcTema=i; pintarMiCurso(true); };
+      f.appendChild(ab);
+      var up=el("button",{type:"button",class:"quitar","aria-label":"Subir"},"↑"); up.disabled=i===0;
+      up.onclick=function(){ C.temas.splice(i-1,0,C.temas.splice(i,1)[0]); guardar(); pintarMiCurso(true); };
+      f.appendChild(up);
+      f.appendChild(botonQuitar("Quitar",function(){ C.temas.splice(i,1); mcTema=0; guardar(); pintarMiCurso(true); }));
+      box.appendChild(f);
+    });
+    var add=el("button",{type:"button",class:"boton"},"+ Añadir tema");
+    add.onclick=function(){ C.temas.push({titulo:"",aprender:"",explicacion:"",importante:"",resumen:""}); guardar(); pintarMiCurso(true); var ins=box.querySelectorAll(".mc-fila input"); if(ins.length) ins[ins.length-1].focus(); };
+    box.appendChild(add);
+  }
+
+  if(mcSeccion==="temario"){
+    if(!C.temas.length){ box.appendChild(el("p",{class:"vacio"},"Primero crea los temas en la sección Índice.")); return; }
+    if(mcTema>=C.temas.length) mcTema=0;
+    var sel=el("select",{"aria-label":"Elegir tema"});
+    C.temas.forEach(function(t,i){ var o=el("option",{value:String(i)},"Tema "+(i+1)+": "+(t.titulo||"sin título")); if(i===mcTema) o.selected=true; sel.appendChild(o); });
+    sel.onchange=function(){ mcTema=Number(sel.value); pintarMiCurso(true); };
+    box.appendChild(sel);
+    var t=C.temas[mcTema];
+    box.appendChild(campo("Título",t.titulo,function(v){t.titulo=v;},{linea:true}));
+    box.appendChild(campo("Qué vas a aprender",t.aprender,function(v){t.aprender=v;},{alto:80}));
+    box.appendChild(campo("Explicación",t.explicacion,function(v){t.explicacion=v;},{alto:340,ayuda:"Deja una línea en blanco entre párrafos. Empieza una línea con «- » para hacer una lista, o con «1. » para pasos numerados."}));
+    box.appendChild(campo("Importante",t.importante,function(v){t.importante=v;},{alto:70,ayuda:"Saldrá en un recuadro destacado."}));
+    box.appendChild(campo("Resumen",t.resumen,function(v){t.resumen=v;},{alto:90}));
+    var nav=el("div",{class:"mc-pasar"});
+    if(mcTema>0){ var a=el("button",{type:"button",class:"boton secundario"},"← Tema anterior"); a.onclick=function(){ mcTema--; pintarMiCurso(true); window.scrollTo({top:document.getElementById("mcNav").getBoundingClientRect().top+window.scrollY-80,behavior:"smooth"}); }; nav.appendChild(a); }
+    if(mcTema<C.temas.length-1){ var b=el("button",{type:"button",class:"boton secundario"},"Tema siguiente →"); b.onclick=function(){ mcTema++; pintarMiCurso(true); window.scrollTo({top:document.getElementById("mcNav").getBoundingClientRect().top+window.scrollY-80,behavior:"smooth"}); }; nav.appendChild(b); }
+    box.appendChild(nav);
+  }
+
+  function listaPares(arr,tit,campA,campB,etA,etB,nombre){
+    if(!arr.length) box.appendChild(el("p",{class:"vacio"},"Todavía no hay ninguno."));
+    arr.forEach(function(x,i){
+      var card=el("div",{class:"mc-tarjeta"});
+      var hd=el("div",{class:"mc-tarjeta-cab"}); hd.appendChild(el("b",null,nombre+" "+(i+1)));
+      hd.appendChild(botonQuitar("Quitar",function(){ arr.splice(i,1); guardar(); pintarMiCurso(true); }));
+      card.appendChild(hd);
+      card.appendChild(campo(etA,x[campA],function(v){x[campA]=v;},{alto:80}));
+      card.appendChild(campo(etB,x[campB],function(v){x[campB]=v;},{alto:70}));
+      box.appendChild(card);
+    });
+    var add=el("button",{type:"button",class:"boton"},"+ Añadir "+nombre.toLowerCase());
+    add.onclick=function(){ var o={}; o[campA]=""; o[campB]=""; arr.push(o); guardar(); pintarMiCurso(true); };
+    box.appendChild(add);
+  }
+  if(mcSeccion==="ejercicios"){ listaPares(C.ejercicios,"","enunciado","solucion","Enunciado","Solución (saldrá al final del documento)","Ejercicio"); }
+  if(mcSeccion==="faq"){ listaPares(C.faq,"","p","r","Pregunta","Respuesta","Pregunta"); }
+
+  if(mcSeccion==="examen"){
+    box.appendChild(el("h4",{class:"mc-h"},"Preguntas tipo test"));
+    if(!C.test.length) box.appendChild(el("p",{class:"vacio"},"Todavía no hay preguntas."));
+    C.test.forEach(function(q,i){
+      q.opciones=q.opciones||["","","",""];
+      var card=el("div",{class:"mc-tarjeta"});
+      var hd=el("div",{class:"mc-tarjeta-cab"}); hd.appendChild(el("b",null,"Pregunta "+(i+1)));
+      hd.appendChild(botonQuitar("Quitar",function(){ C.test.splice(i,1); guardar(); pintarMiCurso(true); }));
+      card.appendChild(hd);
+      card.appendChild(campo("Pregunta",q.pregunta,function(v){q.pregunta=v;},{linea:true}));
+      var grupo="g"+Math.random().toString(36).slice(2);
+      card.appendChild(el("div",{class:"mc-ayuda"},"Escribe las opciones y marca la correcta."));
+      ["a","b","c","d"].forEach(function(letra,k){
+        var f=el("div",{class:"mc-opcion"});
+        var r=el("input",{type:"radio",name:grupo,"aria-label":"Opción "+letra+" es la correcta"}); r.checked=q.correcta===k;
+        r.onchange=function(){ q.correcta=k; guardar(); };
+        var inp=el("input",{type:"text","aria-label":"Opción "+letra}); inp.value=q.opciones[k]||""; inp.placeholder="Opción "+letra;
+        inp.addEventListener("input",function(){ q.opciones[k]=inp.value; guardarLuego(); });
+        f.append(el("span",{class:"mc-letra"},letra+")"),inp,r);
+        card.appendChild(f);
+      });
+      box.appendChild(card);
+    });
+    var add=el("button",{type:"button",class:"boton"},"+ Añadir pregunta tipo test");
+    add.onclick=function(){ C.test.push({pregunta:"",opciones:["","","",""],correcta:0}); guardar(); pintarMiCurso(true); };
+    box.appendChild(add);
+    box.appendChild(el("h4",{class:"mc-h"},"Preguntas prácticas"));
+    var tmp=box; listaPares(C.practicas,"","enunciado","solucion","Enunciado","Solución (solo en tu hoja de corrección)","Práctica");
+    box.appendChild(el("p",{class:"mc-ayuda",style:"margin-top:12px"},"Puntuación: 1 punto cada pregunta tipo test y 2 puntos cada práctica. Se aprueba con el 70 %."));
+  }
+
+  if(mcSeccion==="descargar"){
+    var temas=C.temas.length, escritos=C.temas.filter(function(t){return (t.explicacion||"").trim().length>30;}).length;
+    var res=el("div",{class:"mc-resumen"});
+    [["Temas",temas],["Temas escritos",escritos],["Ejercicios",C.ejercicios.length],["Preguntas test",C.test.length],["Prácticas",C.practicas.length],["Preguntas frecuentes",C.faq.length]].forEach(function(p){
+      var d=el("div"); d.appendChild(el("strong",null,String(p[1]))); d.appendChild(el("span",null,p[0])); res.appendChild(d); });
+    box.appendChild(res);
+    box.appendChild(el("p",{class:"mc-ayuda"},"«Ver e imprimir» abre el documento: desde ahí lo guardas en PDF con la opción de imprimir del navegador («Guardar como PDF»). «Word» descarga un archivo que se abre con Word o Google Docs."));
+    var aulaCard=el("div",{class:"mc-tarjeta mc-aula"});
+    aulaCard.appendChild(el("b",null,"🎓 Aula del alumno"));
+    aulaCard.appendChild(el("p",{class:"mc-ayuda"},"Un archivo con el curso para el alumno: temario con su progreso, ejercicios con solución, examen tipo test que se corrige solo y un botón para enviarte su resultado. Se lo mandas por WhatsApp o correo y lo abre en su móvil u ordenador."));
+    var fa=el("div",{class:"herramientas"}); var ba=el("button",{type:"button",class:"boton"},"Crear aula del alumno");
+    ba.onclick=function(){ crearAula(cu,C); }; fa.appendChild(ba); aulaCard.appendChild(fa); box.appendChild(aulaCard);
+    [["curso","Curso completo","Para el alumno: portada, índice, temas, ejercicios con soluciones y preguntas frecuentes."],
+     ["examen","Examen","Para el alumno: el examen para rellenar y devolver."],
+     ["correccion","Hoja de corrección","Solo para ti: las respuestas correctas y los puntos."]].forEach(function(d){
+      var card=el("div",{class:"mc-tarjeta"});
+      card.appendChild(el("b",null,d[1])); card.appendChild(el("p",{class:"mc-ayuda"},d[2]));
+      var f=el("div",{class:"herramientas"});
+      var v=el("button",{type:"button",class:"boton"},"Ver e imprimir"); v.onclick=function(){ abrirDoc(d[0],cu,C); };
+      var w=el("button",{type:"button",class:"boton secundario"},"Descargar en Word"); w.onclick=function(){ bajar(nombreArchivo(cu,d[0])+".doc",docHTML(d[0],cu,C,true),"application/msword"); };
+      f.append(v,w); card.appendChild(f); box.appendChild(card);
+    });
+  }
+}
+
+/* ---------- AULA DEL ALUMNO ---------- */
+var AULA_TPL="<!doctype html>\n<html lang=\"es\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n<meta name=\"robots\" content=\"noindex, nofollow\">\n<title>Aula · Roma Formación<\/title>\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap\" rel=\"stylesheet\">\n<style>\n:root{--noir:#0f0f0f;--crema:#f7f4ef;--oro:#c8a96e;--oro2:#a8854a;--oro-suave:#f5ecd9;--verde:#2d6a4f;--rojo:#c0392b;--gris:#666;--linea:#ede8e0;\n  --t:\"Cormorant Garamond\",Georgia,serif;--s:\"DM Sans\",system-ui,-apple-system,\"Segoe UI\",sans-serif;box-sizing:border-box;color-scheme:light;\n  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}\n*,*::before,*::after{box-sizing:inherit}\nbody{margin:0;background:var(--crema);color:var(--noir);font-family:var(--s);font-size:17px;line-height:1.6}\nh1,h2,h3{font-family:var(--t);font-weight:600;line-height:1.12;margin:0}\nbutton,input,textarea{font:inherit;color:inherit}\n:focus-visible{outline:3px solid var(--oro);outline-offset:2px}\n.env{max-width:860px;margin:0 auto;padding:0 20px}\n.oculto{display:none!important}\nbody::before{content:\"\";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--noir);z-index:10}\n.cab{background:radial-gradient(ellipse 80% 80% at 75% 30%,#1a2e1f 0%,var(--noir) 70%);color:var(--crema);padding:22px 0 30px;position:relative;overflow:hidden}\n.cab::after{content:\"\";position:absolute;right:-140px;top:-80px;width:420px;height:420px;border:1px solid rgba(200,169,110,.12);border-radius:50%}\n.marca{display:flex;align-items:center;gap:10px}\n.rf{width:40px;height:40px;border-radius:6px;background:#1a1a1a;border:1px solid rgba(200,169,110,.4);color:var(--oro);display:flex;align-items:center;justify-content:center;font-family:var(--t);font-size:20px;font-weight:600}\n.marca small{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(247,244,239,.6)}\n.tag{display:inline-flex;align-items:center;gap:8px;margin-top:22px;background:rgba(200,169,110,.12);border:1px solid rgba(200,169,110,.3);color:var(--oro);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;padding:6px 14px;border-radius:20px}\n.cab h1{font-size:clamp(2.2rem,7vw,3.4rem);color:#fff;margin-top:10px;font-weight:600}\n.cab .hola{color:rgba(247,244,239,.7);margin:6px 0 18px}\n.prog{display:flex;align-items:center;gap:12px;max-width:460px}\n.prog .barra{flex:1;height:10px;background:rgba(255,255,255,.1);border-radius:5px;overflow:hidden}\n.prog .barra i{display:block;height:100%;background:var(--oro);transition:width .4s}\n.prog span{font-size:.9rem;color:var(--oro);white-space:nowrap}\n.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(247,244,239,.97);border-bottom:1px solid var(--linea);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}\n.nav .env{display:flex;gap:4px;overflow-x:auto}\n.nav button{background:none;border:0;border-bottom:3px solid transparent;padding:14px 14px;cursor:pointer;color:var(--gris);white-space:nowrap;font-size:.95rem}\n.nav button[aria-selected=\"true\"]{color:var(--noir);border-color:var(--oro);font-weight:600}\nmain{padding:28px 0 80px}\n.card{background:#fff;border:1px solid var(--linea);border-radius:10px;padding:20px 22px;margin-bottom:16px;box-shadow:0 4px 24px rgba(0,0,0,.05)}\nh2.sec{font-size:2rem;margin-bottom:14px}\n.etq{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--oro2)}\n.indice{list-style:none;padding:0;margin:0}\n.indice li{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--linea);cursor:pointer}\n.indice .n{font-family:var(--t);font-size:1.5rem;color:var(--oro2);min-width:1.4em}\n.indice .t{flex:1}\n.indice .ok{font-size:.85rem;color:var(--verde);font-weight:600}\n.tema h2{font-size:clamp(1.8rem,5vw,2.4rem);margin:6px 0 16px}\n.tema h3{font-size:1.35rem;color:var(--oro2);margin:18px 0 6px}\n.imp{background:var(--oro-suave);border-left:4px solid var(--oro);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}\n.res{background:var(--crema);padding:12px 16px;border-radius:8px;margin:16px 0}\n.boton{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 20px;border-radius:6px;border:0;background:var(--noir);color:var(--crema);font-weight:600;cursor:pointer;text-decoration:none}\n.boton:hover{background:var(--oro2)}\n.boton.oro{background:var(--oro);color:var(--noir)}\n.boton.verde{background:var(--verde);color:#fff}\n.boton.sec{background:transparent;color:var(--noir);border:1.5px solid var(--noir)}\n.acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}\n.pasar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:22px}\n.sol{margin-top:10px;background:#eef6f0;border-left:4px solid var(--verde);padding:10px 14px;border-radius:0 8px 8px 0}\n.preg{margin-bottom:18px}\n.preg b{display:block;margin-bottom:8px}\n.op{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--linea);border-radius:8px;margin-bottom:6px;cursor:pointer;background:#fff}\n.op input{width:20px;height:20px;margin-top:2px;accent-color:var(--verde);flex-shrink:0}\n.op.bien{border-color:var(--verde);background:#eef6f0}\n.op.mal{border-color:var(--rojo);background:#fbeeec}\ntextarea{width:100%;min-height:120px;padding:12px 14px;border:1px solid var(--linea);border-radius:8px;background:#fff;resize:vertical}\ninput[type=text]{width:100%;padding:12px 14px;border:1px solid var(--linea);border-radius:8px;background:#fff}\n.nota-final{text-align:center;padding:26px 20px}\n.nota-final .num{font-family:var(--t);font-size:4rem;line-height:1;font-weight:600}\n.nota-final.aprobado .num{color:var(--verde)}\n.nota-final.suspenso .num{color:var(--rojo)}\n.ayuda{font-size:.9rem;color:var(--gris)}\n.bienvenida{max-width:460px;margin:40px auto;text-align:center}\n.bienvenida h2{font-size:2.2rem;margin:10px 0}\n.pie{text-align:center;font-size:.85rem;color:var(--gris);padding:20px}\n<\/style>\n<\/head>\n<body>\n<header class=\"cab\">\n  <div class=\"env\">\n    <div class=\"marca\"><span class=\"rf\">RF<\/span><div><b style=\"font-family:var(--t);font-size:1.3rem\">Roma Formación<\/b><br><small>Aula del alumno<\/small><\/div><\/div>\n    <span class=\"tag\" id=\"tipo\"><\/span>\n    <h1 id=\"titulo\"><\/h1>\n    <p class=\"hola\" id=\"hola\"><\/p>\n    <div class=\"prog\" aria-label=\"Tu progreso\"><div class=\"barra\"><i id=\"barra\" style=\"width:0%\"><\/i><\/div><span id=\"pct\">0 %<\/span><\/div>\n  <\/div>\n<\/header>\n<nav class=\"nav\" aria-label=\"Partes del curso\"><div class=\"env\" id=\"nav\" role=\"tablist\">\n  <button role=\"tab\" data-v=\"inicio\" aria-selected=\"true\">Inicio<\/button>\n  <button role=\"tab\" data-v=\"temas\" aria-selected=\"false\">Temario<\/button>\n  <button role=\"tab\" data-v=\"ejercicios\" aria-selected=\"false\">Ejercicios<\/button>\n  <button role=\"tab\" data-v=\"examen\" aria-selected=\"false\">Examen<\/button>\n  <button role=\"tab\" data-v=\"faq\" aria-selected=\"false\">Dudas<\/button>\n<\/div><\/nav>\n<main class=\"env\" id=\"main\" aria-live=\"polite\"><\/main>\n<div class=\"pie\">Roma Formación · Si tienes dudas, escribe a tu tutor por <a href=\"#\" id=\"pieWa\">WhatsApp<\/a> o <a href=\"#\" id=\"pieMail\">correo<\/a>.<\/div>\n\n<script>\n(function(){\n\"use strict\";\nvar DATOS=\"__DATOS__\";\nvar D=JSON.parse(decodeURIComponent(escape(atob(DATOS))));\nvar CLAVE=\"rf-aula-\"+D.id;\nvar E={nombre:\"\",hechos:{},respuestas:{},practicas:{},examen:null};\ntry{ var g=localStorage.getItem(CLAVE); if(g) E=Object.assign(E,JSON.parse(g)); }catch(e){}\nfunction guardar(){ try{ localStorage.setItem(CLAVE,JSON.stringify(E)); }catch(e){} }\nvar $=function(id){ return document.getElementById(id); };\nfunction esc(t){ return String(t||\"\").replace(/&/g,\"&amp;\").replace(/<\/g,\"&lt;\").replace(/>/g,\"&gt;\"); }\nfunction fmt(txt){\n  var out=\"\"; String(txt||\"\").replace(/\\r/g,\"\").split(/\\n\\s*\\n/).forEach(function(b){\n    var l=b.split(\"\\n\").filter(function(x){return x.trim();}); if(!l.length) return;\n    if(l.every(function(x){return /^\\s*[-•]\\s+/.test(x);})) out+=\"<ul>\"+l.map(function(x){return \"<li>\"+esc(x.replace(/^\\s*[-•]\\s+/,\"\"))+\"<\/li>\";}).join(\"\")+\"<\/ul>\";\n    else if(l.every(function(x){return /^\\s*\\d+[.)]\\s+/.test(x);})) out+=\"<ol>\"+l.map(function(x){return \"<li>\"+esc(x.replace(/^\\s*\\d+[.)]\\s+/,\"\"))+\"<\/li>\";}).join(\"\")+\"<\/ol>\";\n    else out+=\"<p>\"+l.map(esc).join(\"<br>\")+\"<\/p>\";\n  }); return out;\n}\nfunction wa(txt){ return \"https://wa.me/\"+D.wa+\"?text=\"+encodeURIComponent(txt); }\nfunction mail(asunto,txt){ return \"mailto:\"+D.mail+\"?subject=\"+encodeURIComponent(asunto)+\"&body=\"+encodeURIComponent(txt); }\n$(\"titulo\").textContent=D.nombre; $(\"tipo\").textContent=D.tipo+(D.horas?\" · \"+D.horas+\" horas\":\"\");\ndocument.title=D.nombre+\" · Aula Roma Formación\";\n$(\"pieWa\").href=wa(\"Hola, soy \"+(E.nombre||\"un alumno\")+\". Tengo una duda del curso «\"+D.nombre+\"».\"); $(\"pieWa\").target=\"_blank\";\n$(\"pieMail\").href=mail(\"Duda: \"+D.nombre,\"Hola,\\n\\nTengo una duda del curso «\"+D.nombre+\"»:\\n\\n\");\n\nfunction progreso(){\n  var n=D.temas.length, h=D.temas.filter(function(_,i){return E.hechos[i];}).length;\n  var p=n?Math.round(h/n*100):0; $(\"barra\").style.width=p+\"%\"; $(\"pct\").textContent=p+\" % · \"+h+\" de \"+n+\" temas\";\n  $(\"hola\").textContent=E.nombre?(\"Hola, \"+E.nombre+\". Bienvenido a tu curso.\"):\"\";\n}\nvar vista=\"inicio\", temaAct=0;\nfunction ir(v,t){ vista=v; if(t!=null) temaAct=t; document.querySelectorAll(\"#nav button\").forEach(function(b){ b.setAttribute(\"aria-selected\",b.dataset.v===v?\"true\":\"false\"); }); pintar(); window.scrollTo({top:0,behavior:\"smooth\"}); }\ndocument.getElementById(\"nav\").addEventListener(\"click\",function(e){ var b=e.target.closest(\"button\"); if(b) ir(b.dataset.v); });\n\nfunction pintar(){\n  var m=$(\"main\"); progreso();\n  if(!E.nombre){\n    m.innerHTML='<div class=\"bienvenida card\"><span class=\"etq\">Bienvenido a tu aula<\/span><h2>¿Cómo te llamas?<\/h2><p class=\"ayuda\">Tu nombre saldrá en tu aula y en el diploma.<\/p><input type=\"text\" id=\"nom\" placeholder=\"Nombre y apellidos\" autocomplete=\"name\"><div class=\"acciones\" style=\"justify-content:center\"><button class=\"boton oro\" id=\"empezar\">Empezar el curso<\/button><\/div><\/div>';\n    $(\"empezar\").onclick=function(){ var v=$(\"nom\").value.trim(); if(!v){ $(\"nom\").focus(); return; } E.nombre=v; guardar(); pintar(); };\n    $(\"nom\").addEventListener(\"keydown\",function(e){ if(e.key===\"Enter\") $(\"empezar\").click(); });\n    return;\n  }\n  if(vista===\"inicio\"){\n    var h='';\n    if(D.objetivos) h+='<div class=\"card\"><span class=\"etq\">Qué vas a aprender<\/span>'+fmt(D.objetivos)+'<\/div>';\n    if(D.publico) h+='<div class=\"card\"><span class=\"etq\">Para quién es<\/span>'+fmt(D.publico)+'<\/div>';\n    h+='<div class=\"card\"><h2 class=\"sec\">Temario<\/h2><ul class=\"indice\">'+D.temas.map(function(t,i){ return '<li data-t=\"'+i+'\"><span class=\"n\">'+(i+1)+'<\/span><span class=\"t\">'+esc(t.titulo||\"Tema \"+(i+1))+'<\/span>'+(E.hechos[i]?'<span class=\"ok\">✓ Hecho<\/span>':'<span class=\"ayuda\">Empezar →<\/span>')+'<\/li>'; }).join(\"\")+'<\/ul><\/div>';\n    h+='<div class=\"card\"><span class=\"etq\">Cómo estudiar<\/span><ol><li>Estudia los temas en orden y márcalos como terminados.<\/li><li>Haz los ejercicios y comprueba la solución.<\/li><li>Haz el examen final. Se aprueba con el 70 %.<\/li><li>Envía tu resultado a tu tutor y recibirás tu diploma.<\/li><\/ol><\/div>';\n    m.innerHTML=h;\n    m.querySelectorAll(\".indice li\").forEach(function(li){ li.onclick=function(){ ir(\"temas\",Number(li.dataset.t)); }; });\n  }\n  if(vista===\"temas\"){\n    if(!D.temas.length){ m.innerHTML='<p class=\"ayuda\">Este curso todavía no tiene temas.<\/p>'; return; }\n    var t=D.temas[temaAct], h2='<article class=\"card tema\"><span class=\"etq\">Tema '+(temaAct+1)+' de '+D.temas.length+'<\/span><h2>'+esc(t.titulo)+'<\/h2>';\n    if(t.aprender) h2+='<h3>Qué vas a aprender<\/h3>'+fmt(t.aprender);\n    if(t.explicacion) h2+=fmt(t.explicacion);\n    if(t.importante) h2+='<div class=\"imp\"><b>Importante.<\/b> '+fmt(t.importante)+'<\/div>';\n    if(t.resumen) h2+='<div class=\"res\"><b>Resumen<\/b>'+fmt(t.resumen)+'<\/div>';\n    h2+='<div class=\"acciones\"><button class=\"boton '+(E.hechos[temaAct]?'sec':'verde')+'\" id=\"hecho\">'+(E.hechos[temaAct]?'✓ Tema terminado (desmarcar)':'Marcar tema como terminado')+'<\/button><\/div>';\n    h2+='<div class=\"pasar\">'+(temaAct>0?'<button class=\"boton sec\" id=\"ant\">← Tema anterior<\/button>':'<span><\/span>')+(temaAct<D.temas.length-1?'<button class=\"boton\" id=\"sig\">Tema siguiente →<\/button>':'<button class=\"boton oro\" id=\"aEj\">Ir a los ejercicios →<\/button>')+'<\/div><\/article>';\n    m.innerHTML=h2;\n    $(\"hecho\").onclick=function(){ E.hechos[temaAct]=!E.hechos[temaAct]; guardar(); pintar(); };\n    if($(\"ant\")) $(\"ant\").onclick=function(){ ir(\"temas\",temaAct-1); };\n    if($(\"sig\")) $(\"sig\").onclick=function(){ if(!E.hechos[temaAct]){ E.hechos[temaAct]=true; guardar(); } ir(\"temas\",temaAct+1); };\n    if($(\"aEj\")) $(\"aEj\").onclick=function(){ if(!E.hechos[temaAct]){ E.hechos[temaAct]=true; guardar(); } ir(\"ejercicios\"); };\n  }\n  if(vista===\"ejercicios\"){\n    if(!D.ejercicios.length){ m.innerHTML='<div class=\"card\"><p>Este curso no tiene ejercicios. ¡Pasa directamente al examen!<\/p><button class=\"boton oro\" id=\"aEx\">Ir al examen<\/button><\/div>'; $(\"aEx\").onclick=function(){ ir(\"examen\"); }; return; }\n    m.innerHTML='<h2 class=\"sec\">Ejercicios<\/h2>'+D.ejercicios.map(function(e,i){ return '<div class=\"card\"><span class=\"etq\">Ejercicio '+(i+1)+'<\/span>'+fmt(e.enunciado)+'<button class=\"boton sec\" data-s=\"'+i+'\">Ver solución<\/button><div class=\"sol oculto\" id=\"s'+i+'\">'+fmt(e.solucion)+'<\/div><\/div>'; }).join(\"\")+'<button class=\"boton oro\" id=\"aEx\">Ir al examen final →<\/button>';\n    m.querySelectorAll(\"[data-s]\").forEach(function(b){ b.onclick=function(){ var s=$(\"s\"+b.dataset.s); s.classList.toggle(\"oculto\"); b.textContent=s.classList.contains(\"oculto\")?\"Ver solución\":\"Ocultar solución\"; }; });\n    $(\"aEx\").onclick=function(){ ir(\"examen\"); };\n  }\n  if(vista===\"examen\"){ pintarExamen(m); }\n  if(vista===\"faq\"){\n    m.innerHTML='<h2 class=\"sec\">Dudas frecuentes<\/h2>'+(D.faq.length?D.faq.map(function(f){ return '<div class=\"card\"><b>'+esc(f.p)+'<\/b>'+fmt(f.r)+'<\/div>'; }).join(\"\"):'<p class=\"ayuda\">Todavía no hay dudas frecuentes en este curso.<\/p>')+\n      '<div class=\"card\"><b>¿Tienes otra duda?<\/b><p>Escribe a tu tutor y te responde en menos de 24 horas.<\/p><div class=\"acciones\"><a class=\"boton verde\" target=\"_blank\" rel=\"noopener\" href=\"'+wa(\"Hola, soy \"+E.nombre+\". Tengo una duda del curso «\"+D.nombre+\"».\")+'\">📲 WhatsApp<\/a><a class=\"boton sec\" href=\"'+mail(\"Duda: \"+D.nombre,\"Hola, soy \"+E.nombre+\".\\n\\nTengo una duda del curso «\"+D.nombre+\"»:\\n\\n\")+'\">✉️ Correo<\/a><\/div><\/div>';\n  }\n}\nfunction pintarExamen(m){\n  var T=D.test, P=D.practicas, hecho=!!E.examen;\n  var h='<h2 class=\"sec\">Examen final<\/h2><div class=\"card ayuda\">Responde a todas las preguntas. Cada pregunta tipo test vale 1 punto'+(P.length?' y cada práctica 2 puntos':'')+'. Se aprueba con el 70 %.<\/div>';\n  if(!T.length && !P.length){ m.innerHTML=h+'<p class=\"ayuda\">El examen de este curso todavía no está preparado.<\/p>'; return; }\n  T.forEach(function(q,i){\n    h+='<div class=\"card preg\"><b>'+(i+1)+'. '+esc(q.pregunta)+'<\/b>';\n    q.opciones.forEach(function(o,k){ if(!o) return;\n      var cls=\"\"; if(hecho){ if(k===q.correcta) cls=\" bien\"; else if(E.respuestas[i]===k) cls=\" mal\"; }\n      h+='<label class=\"op'+cls+'\"><input type=\"radio\" name=\"q'+i+'\" value=\"'+k+'\"'+(E.respuestas[i]===k?\" checked\":\"\")+(hecho?\" disabled\":\"\")+'><span>'+\"abcd\"[k]+') '+esc(o)+'<\/span><\/label>'; });\n    h+='<\/div>';\n  });\n  P.forEach(function(p,i){ h+='<div class=\"card preg\"><b>Práctica '+(i+1)+'<\/b>'+fmt(p.enunciado)+'<textarea data-p=\"'+i+'\" aria-label=\"Respuesta a la práctica '+(i+1)+'\"'+(hecho?\" readonly\":\"\")+'>'+esc(E.practicas[i]||\"\")+'<\/textarea><\/div>'; });\n  if(!hecho) h+='<div class=\"acciones\"><button class=\"boton oro\" id=\"corregir\">Terminar y corregir el examen<\/button><\/div>';\n  else h+=resultadoHTML();\n  m.innerHTML=h;\n  m.querySelectorAll('input[type=radio]').forEach(function(r){ r.onchange=function(){ E.respuestas[Number(r.name.slice(1))]=Number(r.value); guardar(); }; });\n  m.querySelectorAll('textarea[data-p]').forEach(function(t){ t.oninput=function(){ E.practicas[t.dataset.p]=t.value; guardar(); }; });\n  if($(\"corregir\")) $(\"corregir\").onclick=function(){\n    var falta=T.some(function(_,i){ return E.respuestas[i]==null; });\n    if(falta && !$(\"corregir\").dataset.seguro){ $(\"corregir\").dataset.seguro=\"1\"; $(\"corregir\").textContent=\"Te faltan preguntas. Toca otra vez para corregir igualmente\"; return; }\n    var aciertos=T.filter(function(q,i){ return E.respuestas[i]===q.correcta; }).length;\n    E.examen={aciertos:aciertos,total:T.length,fecha:new Date().toLocaleDateString(\"es-ES\")}; guardar(); pintar();\n  };\n  if($(\"repetir\")) $(\"repetir\").onclick=function(){ if(!$(\"repetir\").dataset.seguro){ $(\"repetir\").dataset.seguro=\"1\"; $(\"repetir\").textContent=\"Se borrarán tus respuestas. Toca otra vez\"; return; } E.examen=null; E.respuestas={}; guardar(); pintar(); };\n}\nfunction resultadoHTML(){\n  var x=E.examen, P=D.practicas, pTest=x.total?Math.round(x.aciertos/x.total*100):0;\n  var aprobadoTest=pTest>=70, hayP=P.length>0;\n  var resumen=\"Hola, soy \"+E.nombre+\". He terminado el examen del curso «\"+D.nombre+\"».\\nTipo test: \"+x.aciertos+\" de \"+x.total+\" (\"+pTest+\" %).\";\n  if(hayP) P.forEach(function(p,i){ resumen+=\"\\n\\nPráctica \"+(i+1)+\":\\n\"+String(E.practicas[i]||\"(sin responder)\").slice(0,600); });\n  resumen+=\"\\n\\n\"+(hayP?\"¿Me revisas las prácticas?\":\"\")+(aprobadoTest&&!hayP?\"¿Me envías mi diploma?\":\"\");\n  var h='<div class=\"card nota-final '+(aprobadoTest?'aprobado':'suspenso')+'\"><span class=\"etq\">Tu resultado del tipo test<\/span><div class=\"num\">'+x.aciertos+' / '+x.total+'<\/div><p><b>'+pTest+' %<\/b> · '+(aprobadoTest?'¡Enhorabuena, '+esc(E.nombre)+'! Has superado el tipo test.':'No has llegado al 70 %. Repasa los temas y vuelve a intentarlo.')+'<\/p>';\n  if(hayP) h+='<p class=\"ayuda\">Tus prácticas las revisará tu tutor. Envíaselas con el botón de abajo.<\/p>';\n  h+='<div class=\"acciones\" style=\"justify-content:center\">';\n  if(aprobadoTest||hayP) h+='<a class=\"boton verde\" target=\"_blank\" rel=\"noopener\" href=\"'+wa(resumen)+'\">📲 Enviar mi examen al tutor<\/a><a class=\"boton sec\" href=\"'+mail(\"Examen: \"+D.nombre+\" · \"+E.nombre,resumen)+'\">✉️ Por correo<\/a>';\n  h+='<button class=\"boton sec\" id=\"repetir\">Repetir el examen<\/button><\/div><\/div>';\n  return h;\n}\npintar();\n})();\n<\/script>\n<\/body>\n<\/html>\n";
+var CONTACTO={wa:"34611175080",mail:"roma.servicios.tramites@gmail.com"};
+function crearAula(cu,C){
+  var datos={id:cu.id,nombre:cu.nombre,tipo:cu.tipo,horas:cu.horas||"",objetivos:C.objetivos||"",publico:C.publico||"",
+    temas:C.temas.map(function(t){return {titulo:t.titulo||"",aprender:t.aprender||"",explicacion:t.explicacion||"",importante:t.importante||"",resumen:t.resumen||""};}),
+    ejercicios:C.ejercicios.map(function(e){return {enunciado:e.enunciado||"",solucion:e.solucion||""};}),
+    test:C.test.filter(function(q){return (q.pregunta||"").trim();}).map(function(q){return {pregunta:q.pregunta,opciones:(q.opciones||[]).slice(0,4),correcta:q.correcta||0};}),
+    practicas:C.practicas.map(function(x){return {enunciado:x.enunciado||"",solucion:""};}),
+    faq:C.faq.map(function(f){return {p:f.p||"",r:f.r||""};}),
+    wa:CONTACTO.wa, mail:CONTACTO.mail};
+  var b64=btoa(unescape(encodeURIComponent(JSON.stringify(datos))));
+  bajar("aula-"+nombreArchivo(cu,"curso")+".html", AULA_TPL.replace("__DATOS__",b64), "text/html");
+  aviso("Aula creada. Mándasela al alumno por WhatsApp o correo");
+}
+function nombreArchivo(cu,tipo){ return (tipo==="curso"?"":tipo+"-")+cu.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""); }
+function esc(t){ return String(t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function formatear(txt){
+  var bloques=String(txt||"").replace(/\r/g,"").split(/\n\s*\n/), out="";
+  bloques.forEach(function(b){
+    var lin=b.split("\n").filter(function(l){return l.trim();}); if(!lin.length) return;
+    if(lin.every(function(l){return /^\s*[-•]\s+/.test(l);})) out+="<ul>"+lin.map(function(l){return "<li>"+esc(l.replace(/^\s*[-•]\s+/,""))+"</li>";}).join("")+"</ul>";
+    else if(lin.every(function(l){return /^\s*\d+[.)]\s+/.test(l);})) out+="<ol>"+lin.map(function(l){return "<li>"+esc(l.replace(/^\s*\d+[.)]\s+/,""))+"</li>";}).join("")+"</ol>";
+    else out+="<p>"+lin.map(esc).join("<br>")+"</p>";
+  });
+  return out;
+}
+function docHTML(tipo,cu,C,word){
+  var css="body{font-family:'DM Sans',Arial,sans-serif;color:#0f0f0f;line-height:1.6;max-width:760px;margin:0 auto;padding:40px 28px;font-size:12pt}"+
+   "h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;line-height:1.15}"+
+   "h1{font-size:34pt;margin:0 0 10px}h2{font-size:22pt;margin:34px 0 10px;border-bottom:2px solid #c8a96e;padding-bottom:6px}h3{font-size:15pt;margin:20px 0 6px;color:#a8854a}"+
+   ".portada{text-align:center;padding:90px 0 60px;border-bottom:3px solid #c8a96e;margin-bottom:30px"+(word?"":";page-break-after:always")+"}"+
+   ".rf{display:inline-block;width:64px;height:64px;line-height:64px;background:#0f0f0f;color:#c8a96e;font-family:'Cormorant Garamond',Georgia,serif;font-size:26pt;border-radius:8px;margin-bottom:22px}"+
+   ".etq{letter-spacing:.18em;text-transform:uppercase;font-size:9pt;color:#a8854a}"+
+   ".imp{background:#f5ecd9;border-left:4px solid #c8a96e;padding:10px 14px;margin:12px 0}"+
+   ".res{background:#f7f4ef;padding:10px 14px;margin:12px 0}"+
+   ".tema{"+(word?"":"page-break-before:always")+"}"+
+   ".preg{margin:14px 0}.op{margin:4px 0 4px 18px}.ok{font-weight:bold;color:#2d6a4f}"+
+   ".linea{border-bottom:1px solid #999;height:26px}"+
+   "@media print{body{padding:0}}";
+  var fuentes=word?"":'<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">';
+  var h='<!doctype html><html lang="es"><head><meta charset="utf-8"><title>'+esc(cu.nombre)+'</title>'+fuentes+'<style>'+css+'</style></head><body>';
+  var cab='<div class="portada"><div class="rf">RF</div><div class="etq">Roma Formación</div><h1>'+esc(cu.nombre)+'</h1><div class="etq">'+esc(cu.tipo)+(cu.horas?' · '+esc(cu.horas)+' horas':'')+'</div>';
+  if(tipo==="curso"){
+    h+=cab+'</div>';
+    if(C.objetivos) h+='<h2>Qué vas a aprender</h2>'+formatear(C.objetivos);
+    if(C.publico) h+='<h2>Para quién es</h2>'+formatear(C.publico);
+    if(C.temas.length){ h+='<h2>Índice</h2><ol>'+C.temas.map(function(t){return '<li>'+esc(t.titulo||"Tema sin título")+'</li>';}).join("")+'</ol>'; }
+    C.temas.forEach(function(t,i){
+      h+='<div class="tema"><h2>Tema '+(i+1)+'. '+esc(t.titulo||"")+'</h2>';
+      if(t.aprender) h+='<h3>Qué vas a aprender</h3>'+formatear(t.aprender);
+      if(t.explicacion) h+=formatear(t.explicacion);
+      if(t.importante) h+='<div class="imp"><b>Importante.</b> '+formatear(t.importante)+'</div>';
+      if(t.resumen) h+='<div class="res"><b>Resumen</b>'+formatear(t.resumen)+'</div>';
+      h+='</div>';
+    });
+    if(C.ejercicios.length){
+      h+='<div class="tema"><h2>Ejercicios</h2>'+C.ejercicios.map(function(e,i){return '<h3>Ejercicio '+(i+1)+'</h3>'+formatear(e.enunciado);}).join("");
+      h+='<h2>Soluciones de los ejercicios</h2>'+C.ejercicios.map(function(e,i){return '<h3>Ejercicio '+(i+1)+'</h3>'+formatear(e.solucion);}).join("")+'</div>';
+    }
+    if(C.faq.length){ h+='<div class="tema"><h2>Preguntas frecuentes</h2>'+C.faq.map(function(f){return '<h3>'+esc(f.p)+'</h3>'+formatear(f.r);}).join("")+'</div>'; }
+    h+='<p class="etq" style="margin-top:40px">¿Dudas? Escribe a tu tutor de Roma Formación por WhatsApp o correo.</p>';
+  } else {
+    var corr=tipo==="correccion";
+    h+=cab+'<h2 style="border:none">'+(corr?'Hoja de corrección':'Examen final')+'</h2>'+(corr?'<p>Solo para el tutor.</p>':'<p>Nombre: ______________________________ &nbsp; Fecha: ____________</p>')+'</div>';
+    if(!corr) h+='<p>Marca una sola respuesta en cada pregunta tipo test (1 punto cada una) y responde a las preguntas prácticas (2 puntos cada una). Se aprueba con el 70 %. Cuando termines, envía el examen a tu tutor por WhatsApp o correo.</p>';
+    if(C.test.length){ h+='<h2>Preguntas tipo test</h2>'+C.test.map(function(q,i){
+      var ops=(q.opciones||[]).map(function(o,k){ if(!o) return ""; var ok=corr&&q.correcta===k; return '<div class="op'+(ok?' ok':'')+'">'+(corr?(ok?'✔ ':''):'☐ ')+"abcd"[k]+') '+esc(o)+'</div>'; }).join("");
+      return '<div class="preg"><b>'+(i+1)+'. '+esc(q.pregunta)+'</b>'+ops+'</div>'; }).join(""); }
+    if(C.practicas.length){ h+='<h2>Preguntas prácticas</h2>'+C.practicas.map(function(p,i){
+      return '<div class="preg"><b>Práctica '+(i+1)+'</b>'+formatear(p.enunciado)+(corr?'<div class="res"><b>Solución</b>'+formatear(p.solucion)+'</div>':'<div class="linea"></div><div class="linea"></div><div class="linea"></div><div class="linea"></div>')+'</div>'; }).join(""); }
+    var total=C.test.length+C.practicas.length*2;
+    h+='<p class="etq" style="margin-top:30px">Puntuación total: '+total+' puntos · Aprobado con '+Math.ceil(total*0.7)+' puntos</p>';
+  }
+  return h+'</body></html>';
+}
+function abrirDoc(tipo,cu,C){
+  var html=docHTML(tipo,cu,C,false);
+  var url=URL.createObjectURL(new Blob([html],{type:"text/html"}));
+  var w=window.open(url,"_blank");
+  if(!w){ bajar(nombreArchivo(cu,tipo)+".html",html,"text/html"); aviso("Descargado. Ábrelo y usa Imprimir → Guardar como PDF"); }
+  setTimeout(function(){ URL.revokeObjectURL(url); },60000);
+}
+
+function pintarTodo(){ pintarFichaje(); pintarSemana(); pintarTarea(); pintarPlan(); pintarCursos(); pintarDiario(); pintarRegistro(); pintarMiCurso(); }
+
+/* ---------- eventos ---------- */
+document.getElementById("botonFichar").onclick=fichar;
+document.getElementById("mcNav").addEventListener("click",function(e){ var b=e.target.closest("button"); if(!b) return; mcSeccion=b.dataset.s; pintarMiCurso(true); });
+document.getElementById("pestanas").addEventListener("click",function(e){
+  var b=e.target.closest("button"); if(!b) return;
+  document.querySelectorAll("#pestanas button").forEach(function(x){x.setAttribute("aria-selected",x===b?"true":"false");});
+  document.querySelectorAll(".panel").forEach(function(p){p.hidden=p.dataset.panel!==b.dataset.p;});
+});
+document.getElementById("guardarDiario").onclick=function(){ est.diario[hoyStr()]=document.getElementById("diarioHoy").value.trim(); if(!est.diario[hoyStr()]) delete est.diario[hoyStr()]; guardar(); aviso("Guardado"); pintarDiario(); };
+document.getElementById("formCurso").onsubmit=function(e){
+  e.preventDefault(); var n=document.getElementById("cNombre").value.trim(); if(!n) return;
+  est.cursos.push({id:"c-"+idNuevo(), nombre:n, tipo:document.getElementById("cTipo").value, horas:document.getElementById("cHoras").value.replace(/\D/g,""), hecho:document.getElementById("cHecho").checked});
+  e.target.reset(); guardar(); pintarTodo(); aviso("Curso añadido al plan");
+};
+document.getElementById("botonCsv").onclick=function(){
+  var filas=[["Fecha","Entrada","Salida","Minutos"]].concat(est.fichajes.slice().sort(function(a,b){return a.in-b.in;}).map(function(f){return [f.d,hm(f.in),f.out?hm(f.out):"",Math.round(((f.out||Date.now())-f.in)/60000)];}));
+  bajar("registro-horario.csv","\ufeff"+filas.map(function(r){return r.join(";");}).join("\n"),"text/csv");
+};
+document.getElementById("botonCopia").onclick=function(){ bajar("copia-oficina-"+hoyStr()+".json",JSON.stringify(est,null,1),"application/json"); };
+document.getElementById("archivoCopia").onchange=function(e){
+  var f=e.target.files[0]; if(!f) return;
+  f.text().then(function(t){ var d=JSON.parse(t); if(!d.fichajes||!d.cursos) throw new Error();
+    if(!confirm("Esto sustituye tus datos actuales por los de la copia. ¿Seguir?")) return;
+    est=d; est.completadas=est.completadas||{}; guardar(); pintarTodo(); aviso("Copia restaurada");
+  }).catch(function(){ aviso("Ese archivo no es una copia válida"); });
+  e.target.value="";
+};
+
+pintarTodo();
+setInterval(function(){ pintarFichaje(); if(abierto()) pintarSemana(); },15000);
+setInterval(function(){ document.getElementById("reloj").textContent=hm(new Date()); },1000);
+})();
+</script>
+</body>
+</html>
